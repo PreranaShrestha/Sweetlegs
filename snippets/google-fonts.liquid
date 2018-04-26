@@ -1,0 +1,34 @@
+{%- assign google_font = '' -%}
+{%- if settings.general_font != '' -%}
+  {%- assign google_font = google_font | append: settings.general_font | append: '_' -%}
+  {%- capture general_font_url %}{{ settings.general_font | replace:' ', '+' }}:100,300,400,500,600,700,800,900{% endcapture -%}
+  {{- '//fonts.googleapis.com/css?family=' | append: general_font_url | stylesheet_tag -}}
+{%- endif -%}
+{%- if settings.heading_font != '' -%}
+  {%- unless google_font contains settings.heading_font -%}
+    {%- assign google_font = google_font | append: settings.heading_font | append: '_' -%}
+    {%- capture heading_font_url %}{{ settings.heading_font | replace:' ', '+' }}:100,300,400,500,600,700,800,900{% endcapture -%}
+    {{- '//fonts.googleapis.com/css?family=' | append: heading_font_url | stylesheet_tag -}}
+  {%- endunless -%}
+{%- endif -%}
+{%- if settings.header_font != '' -%}
+  {%- unless google_font contains settings.header_font -%}
+    {%- assign google_font = google_font | append: settings.header_font | append: '_' -%}
+    {%- capture header_font_url %}{{ settings.header_font | replace:' ', '+' }}:100,300,400,500,600,700,800,900{% endcapture -%}
+    {{- '//fonts.googleapis.com/css?family=' | append: header_font_url | stylesheet_tag -}}
+  {%- endunless -%}
+{%- endif -%}
+{%- if settings.nav_font != '' -%}
+  {%- unless google_font contains settings.nav_font -%}
+    {%- assign google_font = google_font | append: settings.nav_font | append: '_' -%}
+    {%- capture nav_font_url %}{{ settings.nav_font | replace:' ', '+' }}:100,300,400,500,600,700,800,900{% endcapture -%}
+    {{- '//fonts.googleapis.com/css?family=' | append: nav_font_url | stylesheet_tag -}}
+  {%- endunless -%}
+{%- endif -%}
+{%- if settings.special_font != '' -%}
+  {%- unless google_font contains settings.special_font -%}
+    {%- assign google_font = google_font | append: settings.special_font | append: '_' -%}
+    {%- capture special_font_url %}{{ settings.special_font | replace:' ', '+' }}:100,300,400,500,600,700,800,900{% endcapture -%}
+    {{- '//fonts.googleapis.com/css?family=' | append: special_font_url | stylesheet_tag -}}
+  {%- endunless -%}
+{%- endif -%}

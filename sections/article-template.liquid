@@ -1,0 +1,456 @@
+<div id="primary" class="blog-content-area">
+  {%- include 'blog-header' -%}
+  <div class="row">
+    <div class="columns {% if section.settings.article_layout == '' %}large-12 no-sidebar{% else %}large-8 with-sidebar{% endif %}">
+      <div id="content" class="site-content">
+        <article class="post">
+          {%- assign article_excerpt = article.excerpt -%}
+          {%- unless article.excerpt.size > 0 -%}
+          {%- assign article_excerpt = article.content | strip_html | truncatewords: 30 -%}
+          {%- endunless -%}
+          
+          {%- capture my_shortcode -%}{% include 'shortcode-revert' load: article_excerpt %}{%- endcapture -%}
+          <div class="row">
+            <div class="large-12 columns">
+              <header class="entry-header">
+                <div class="row">
+                  <div class="large-12 columns">
+                    {%- if my_shortcode contains 'gallery' or my_shortcode contains 'youtube' or my_shortcode contains 'vimeo' -%}
+                    <div class="entry-thumbnail">
+                      {%- if my_shortcode contains 'gallery' and article.tags.size > 0 -%}
+                      <ul class="post-categories">
+                        {%- for tag in article.tags -%}
+                        <li>
+                          {{- tag | link_to_add_tag: tag -}}
+                        </li>
+                        {%- endfor -%}
+                      </ul>
+                      {%- endif -%}
+                      {%- include 'shortcode' load: my_shortcode -%}
+                    </div>
+                    {%- elsif article.image -%}
+                    <div class="entry-thumbnail">
+                      {%- if article.tags.size > 0 -%}
+                      <ul class="post-categories">
+                        {%- for tag in article.tags -%}
+                        <li>
+                          {{- tag | link_to_add_tag: tag -}}
+                        </li>
+                        {%- endfor -%}
+                      </ul>
+                      {%- endif -%}
+                      {{- article | img_url: 'master' | img_tag: article.title -}}
+                    </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </header>
+            </div>
+          </div>
+          <div class="row">
+            <div class="columns {% if section.settings.article_layout == '' %}large-8 large-centered without-sidebar{% else %}large-12{% endif %}">
+              <div class="entry-content">
+                {%- assign article_content = article.content -%}
+                {%- include 'shortcode' load: article_content -%}
+
+                <footer class="entry-meta">
+                  {%- if section.settings.blog_author != '' -%}
+                  {{- 'blogs.article.posted_by_author_html' | t: author: article.author -}}&nbsp;
+                  {%- endif -%}
+                  {%- capture article_category = -%}<a href="{{ blog.url }}" rel="category tag">{{ blog.title }}</a>{%- endcapture -%}
+                  {{- 'blogs.article.in_category_html' | t: category: article_category -}}&nbsp;
+                  {%- if article.tags.size > 0 -%}
+                  {%- capture article_tags = -%}
+                    {%- assign tags_count = 1 -%}
+                    {%- for tag in article.tags -%}
+                      <a href="{{ blog.url }}/tagged/{{ tag | handle }}" rel="tag">{{ tag }}</a>{% if tags_count < article.tags.size %},&nbsp;{% endif %}
+                      {%- assign tags_count = tags_count | plus:1 -%}
+                    {%- endfor -%}
+                  {%- endcapture -%}
+                  {{- 'blogs.article.and_tags_html' | t: tags: article_tags -}}
+                  {%- endif -%}
+                </footer>
+              </div>
+            </div>
+          </div>
+        </article>
+        {%- if blog.next_article or blog.previous_article -%}
+        <nav id="nav-below" class="post-navigation">
+          <div class="row">
+            <div class="columns {% if section.settings.article_layout == '' %}large-8 large-centered without-sidebar{% else %}large-12{% endif %}">
+              <div class="row">
+                {%- if blog.previous_article -%}
+                {%- assign article_handle = blog.previous_article | split: '/' | last -%}
+                {%- assign previous_article = article_handle | replace: '-', ' ' | capitalize -%}
+                {%- for my_article in blog.articles -%}
+                  {%- assign my_article_handle = my_article.handle | split: '/' | last -%}
+                  {%- if my_article_handle == article_handle -%}
+                    {%- assign previous_article = my_article.title -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                <div class="large-6 columns nav-left">
+                  <div class="nav-previous">
+                    <a href="{{ blog.previous_article }}" rel="prev">
+                      <div class="nav-previous-title"><span>{{ 'blogs.article.previous' | t | escape }}</span></div>
+                      {{- previous_article -}}
+                    </a>
+                  </div>
+                </div>
+                {%- endif -%}
+                {%- if blog.next_article -%}
+                {%- assign article_handle = blog.next_article | split: '/' | last -%}
+                {%- assign next_article = article_handle | replace: '-', ' ' | capitalize -%}
+                {%- for my_article in blog.articles -%}
+                  {%- assign my_article_handle = my_article.handle | split: '/' | last -%}
+                  {%- if my_article_handle == article_handle -%}
+                    {%- assign next_article = my_article.title -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                <div class="large-6 columns nav-right">
+                  <div class="nav-next">
+                    <a href="{{ blog.next_article }}" rel="next">
+                      <div class="nav-next-title"><span>{{ 'blogs.article.next' | t | escape }}</span></div>
+                      {{- next_article -}}
+                    </a>
+                  </div>
+                </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </nav>
+        {%- endif -%}
+        
+        {%- if blog.comments_enabled? -%}
+          {%- assign new_comment = false -%}
+          {%- if comment and comment.created_at -%}
+            {%- assign new_comment = true -%}
+            {%- assign new_comment_id = comment.id -%}
+          {%- endif -%}
+
+          {%- if new_comment -%}
+            {%- assign duplicate_comment = false %}
+            {%- for comment in article.comments -%}
+              {%- if comment.id == new_comment_id -%}
+                {%- assign duplicate_comment = true -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if duplicate_comment -%}
+              {%- assign number_of_comments = article.comments_count -%}
+            {%- else -%}
+              {%- assign number_of_comments = article.comments_count | plus: 1 -%}
+            {%- endif -%}
+          {%- else -%}
+            {%- assign number_of_comments = article.comments_count -%}
+          {%- endif -%}
+        <div class="comments_section">
+          <div class="row">
+            <div class="columns {% if section.settings.article_layout == '' %}large-8 large-centered without-sidebar{% else %}large-12{% endif %}">
+              <div id="comments" class="comments-area">
+                {%- if number_of_comments > 0 -%}
+                <h2 class="comments-title">{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }} "<span>{{ article.title }}</span>"</h2>
+                {%- paginate article.comments by 5 -%}
+                <div id="comments">
+                  {%- if new_comment -%}
+                    <p class="note form-success">
+                      {%- if blog.moderated? -%}
+                        {{- 'blogs.comments.success_moderated' | t | escape -}}
+                      {% else %}
+                        {{- 'blogs.comments.success' | t | escape -}}
+                      {%- endif -%}
+                    </p>
+                  {% endif %}
+                  <ul class="comment-list">
+                    {%- if new_comment -%}
+                    <li id="comment-{{ comment.id }}" class="comment">
+                      <article class="comment-body">
+                        <div class="comment-content">
+                          <h3 class="comment-author">{{ comment.author  }}</h3>
+                          <div class="comment-metadata">{{ comment.created_at | time_tag: format: 'month_day_year' }}</div>
+                          <div class="comment-text">{{ comment.content }}</div>
+                        </div>
+                      </article>
+                    </li>
+                    {%- endif -%}
+                    
+                    {%- for comment in article.comments -%}
+                      {%- unless comment.id == new_comment_id -%}
+                        <li id="comment-{{ comment.id }}" class="comment">
+                          <article class="comment-body">
+                            <div class="comment-content">
+                              <h3 class="comment-author">{{ comment.author  }}</h3>
+                              <div class="comment-metadata">{{ comment.created_at | time_tag: format: 'month_day_year' }}</div>
+                              <div class="comment-text">{{ comment.content }}</div>
+                            </div>
+                          </article>
+                        </li>
+                      {%- endunless -%}
+                    {%- endfor -%}
+                  </ul>
+                </div>
+                {%- endpaginate -%}
+                {%- endif -%}
+                <div class="row">
+                  <div class="large-12 columns">
+                    <div id="respond" class="comment-respond">
+                      <h3 id="reply-title" class="comment-reply-title">{{ 'blogs.comments.title' | t | escape }}</h3>
+                      {%- form 'new_comment', article -%}
+                      <p class="comment-notes">
+                        <span id="email-notes">{{ 'blogs.comments.notes' | t | escape }}</span> {{ 'blogs.comments.required_fields' | t | escape }} <span class="required">*</span>
+                      </p>
+                      <div class="row">
+                        <div class="large-12 columns">
+                          <div class="minimal-form-input textarea no-text">
+                            <label for="comment">
+                              <span class="text">
+                                <span class="text-inner">{{ 'blogs.comments.message' | t | escape }} <span class="required">*</span></span>
+                              </span>
+                            </label>
+                            <textarea id="comment" required="required" name="comment[body]" cols="45" rows="8" aria-required="true"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="large-6 columns">
+                          <div class="comment-form-author">
+                            <div class="minimal-form-input">
+                              <label for="author">
+                                <span class="text">
+                                  <span class="text-inner">{{ 'blogs.comments.name' | t | escape }} <span class="required">*</span></span>
+                                </span>
+                              </label>
+                              <input id="author" required="required" name="comment[author]" type="text" size="30" aria-required="true" value="{{ form.author }}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="large-6 columns">
+                          <div class="comment-form-email">
+                            <div class="minimal-form-input">
+                              <label for="email">
+                                <span class="text">
+                                  <span class="text-inner">{{ 'blogs.comments.email' | t | escape }} <span class="required">*</span></span>
+                                </span>
+                              </label>
+                              <input id="email" required="required" name="comment[email]" type="email" size="30" aria-required="true" value="{{ form.email }}" autocorrect="off" autocapitalize="off" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {% if blog.moderated? %}
+                      <p class="form-submit">{{ 'blogs.comments.moderated' | t | escape }}</p>
+                      {% endif %}
+                      <p class="form-submit">
+                        <input name="submit" type="submit" id="submit" class="submit" value="{{ 'blogs.comments.post' | t | escape }}" />
+                      </p>
+                      {%- endform -%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if section.settings.article_layout != '' -%}
+    <div class="large-4 columns">
+      <div class="row">
+        <div class="large-11 large-push-1 columns">
+          <div id="secondary" class="widget-area" role="complementary">
+            {%- include 'blog-sidebar' -%}
+          </div>
+        </div>
+      </div>
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Posts",
+    "settings": [
+      {
+        "type": "select",
+        "id": "article_layout",
+        "label": "Post Layout [( ? )](\/\/goo.gl\/pABHBu)",
+        "options": [
+          {
+            "value": "",
+            "label": "No sidebar"
+          },
+          {
+            "value": "1",
+            "label": "Have a sidebar"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "blog_author",
+        "label": "Show Author",
+        "options": [
+          {
+            "value": "",
+            "label": "No"
+          },
+          {
+            "value": "1",
+            "label": "Yes"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "blog_date",
+        "label": "Show Date",
+        "options": [
+          {
+            "value": "",
+            "label": "No"
+          },
+          {
+            "value": "1",
+            "label": "Yes"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "blog_sharing",
+        "label": "Sharing Options",
+        "options": [
+          {
+            "value": "",
+            "label": "Disable"
+          },
+          {
+            "value": "1",
+            "label": "Enable"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Post Sidebar"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Talk about your brand"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          }
+        ]
+      },
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          }
+        ]
+      },
+      {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "video_url",
+            "id": "video_url",
+            "label": "YouTube or Vimeo link",
+            "accept": ["youtube", "vimeo"]
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "Custom HTML",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "html",
+            "id": "code",
+            "label": "HTML"
+          }
+        ]
+      },
+      {
+        "type": "tags",
+        "name": "Blog tags",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Tags"
+          }
+        ]
+      },
+      {
+        "type": "posts",
+        "name": "Featured blog",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Featured Posts"
+          },
+          {
+            "type": "blog",
+            "id": "blog",
+            "label": "Blog"
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "label": "Limit",
+            "default": 3
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

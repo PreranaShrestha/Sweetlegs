@@ -1,0 +1,52 @@
+{%- comment -%} OffCanvas Aside Content Left {%- endcomment -%}
+<div class="offcanvas_aside offcanvas_aside_left">
+  <div class="nano">
+    <div class="nano-content">
+      <div class="offcanvas_aside_content">
+        <div id="menu-offcanvas" class="offcanvas_mainmenu"></div>
+        <div id="sidebar-offcanvas" class="offcanvas_sidebars">
+          <div class="offcanvas_close offcanvas_target"></div>
+          <div class="offcanvas_shop_sidebar offcanvas_target">
+            <div class="widget-area">
+              {%- include 'shop-sidebar' -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- comment -%} OffCanvas Aside Content Right {%- endcomment -%}
+<div class="offcanvas_aside offcanvas_aside_right">        
+  <div class="nano">
+    <div class="nano-content">
+      <div class="offcanvas_aside_content">
+        {%- comment -%} SEARCH {%- endcomment -%}
+        <div id="search-offcanvas" class="offcanvas_search offcanvas_target"></div>
+        
+        {%- comment -%} CART {%- endcomment -%}
+        {%- if settings.catalog_mode == '' -%}
+        <div class="loading-overlay"><i class="button-loader"></i></div>
+        <div id="cart-offcanvas" class="offcanvas_minicart offcanvas_target" data-empty-bag-txt="{{ 'header.cart.no_products' | t | escape }}">
+          <div class="offcanvas_close"></div>
+          <h2 class="cart-title">{{ 'header.cart.title' | t | escape }}</h2>
+          {%- include 'cartblock' -%}
+        </div>
+        {%- endif -%}
+        
+        {%- comment -%} SIZE CHART {%- endcomment -%}
+        {%- if template.name == 'product' and settings.product_size_chart != '' -%}
+        {%- assign sizechart = pages[settings.product_size_chart] -%}
+        <div id="sizechart-offcanvas" class="offcanvas_sizechart offcanvas_target">
+          <div class="offcanvas_close"></div>
+          <h2 class="sizechart-title">{{ sizechart.title }}</h2>
+          <div class="sizechart-content">
+            {{ sizechart.content }}
+          </div> 
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="offcanvas_overlay"></div>

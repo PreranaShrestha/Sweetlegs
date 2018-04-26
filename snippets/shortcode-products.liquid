@@ -1,0 +1,49 @@
+{%- capture my_title -%}{% include 'shortcode-render' render: 'title' %}{%- endcapture -%}
+{%- capture my_collection_name -%}{% include 'shortcode-render' render: 'collection' %}{%- endcapture -%}
+{%- capture my_limit -%}{% include 'shortcode-render' render: 'limit' %}{%- endcapture -%}
+{%- capture my_columns -%}{% include 'shortcode-render' render: 'columns' %}{%- endcapture -%}
+
+{%- if my_title != blank -%}
+<h2 class="shortcode_title">{{ my_title | escape }}</h2>
+{%- endif -%}
+
+{%- assign collection = collections[my_collection_name] -%}
+{%- unless collection.products_count == 0 -%}
+  {%- case my_columns -%}
+    {%- when '6' -%}
+      {%- assign products_per_row = 6 -%}
+      {%- assign products_per_row_xl = 6 -%}
+      {%- assign products_per_row_l = 6 -%}
+      {%- assign products_per_row_m = 4 -%}
+      {%- assign products_per_row_s = 2 -%}
+    {%- when '5' -%}
+      {%- assign products_per_row = 5 -%}
+      {%- assign products_per_row_xl = 5 -%}
+      {%- assign products_per_row_l = 5 -%}
+      {%- assign products_per_row_m = 3 -%}
+      {%- assign products_per_row_s = 2 -%}
+    {%- when '4' -%}
+      {%- assign products_per_row = 4 -%}
+      {%- assign products_per_row_xl = 4 -%}
+      {%- assign products_per_row_l = 4 -%}
+      {%- assign products_per_row_m = 3 -%}
+      {%- assign products_per_row_s = 2 -%}
+    {%- when '3' -%}
+      {%- assign products_per_row = 3 -%}
+      {%- assign products_per_row_xl = 3 -%}
+      {%- assign products_per_row_l = 3 -%}
+      {%- assign products_per_row_m = 3 -%}
+      {%- assign products_per_row_s = 1 -%}
+    {%- else -%}
+      {%- assign products_per_row = 2 -%}
+      {%- assign products_per_row_xl = 2 -%}
+      {%- assign products_per_row_l = 2 -%}
+      {%- assign products_per_row_m = 2 -%}
+      {%- assign products_per_row_s = 1 -%}
+  {%- endcase -%}
+  <div class="row visible products products-grid product-category-list small-up-{{ products_per_row_s }} medium-up-{{ products_per_row_m }} large-up-{{ products_per_row_l }} xlarge-up-{{ products_per_row_xl }} xxlarge-up-{{ products_per_row }} animated fadeIn">
+    {%- for my_product in collection.products limit: my_limit -%}
+      {%- include 'product-item' -%}
+    {%- endfor -%}
+  </div>
+{%- endunless -%}

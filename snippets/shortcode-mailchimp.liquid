@@ -1,0 +1,26 @@
+{%- capture my_action -%}{% include 'shortcode-render' render:'action' %}{%- endcapture -%}
+{%- if my_action != blank -%}
+<aside class="widget widget_mc_form_widget">
+  <h3 class="widget-title">{{ 'footer.mailchimp.title' | t | escape }}</h3>
+  <form class="mc-form" method="post" action="{{ my_action | escape }}" name="mc-embedded-subscribe-form" target="_blank">
+    <div class="mc-form-fields">
+      <p>{{ 'footer.mailchimp.caption' | t | escape }}</p>
+      <table>
+        <tbody>
+          <tr>
+            <td class="large-12">
+              <div class="minimal-form-input no-text">
+                <label>
+                  <span class="text"><span class="text-inner">{{ 'footer.mailchimp.email' | t | escape }}</span></span>
+                </label>
+                <input type="email" name="EMAIL" required="required" />
+              </div>
+            </td>
+            <td><input type="submit" value="{{ 'footer.mailchimp.subscribe' | t | escape }}" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</aside>
+{%- endif -%}

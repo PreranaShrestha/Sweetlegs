@@ -1,0 +1,196 @@
+{%- assign current_variant = my_product.selected_or_first_available_variant -%}
+{%- assign featured_image = current_variant.featured_image | default:my_product.featured_image -%}
+{%- assign my_instructions = my_product.metafields.info -%}
+{% assign totalLineItem = 0 %}
+{% for item in cart.items %}
+     {% assign totalLineItem = totalLineItem | plus: 1 %}      
+  {% endfor %} 
+
+<div class="product column{% if settings.catalog_mode != '' %} catalog_mode{% endif %}{% if settings.shop_addtocart != '' %} display_buttons{% endif %} aspect-ratio-{{ settings.image_layout }}">
+  {%- if settings.shop_quick_view != '' -%}
+  <a href="#" class="button eva_product_quick_view_button background--light" data-product_id="{{ my_product.handle }}">{{'collections.general.quick_view' | t }}</a>
+  {%- endif -%}
+  {%- if settings.compare_enabled == '1' -%}
+  <a href="#" class="add_to_compare compare eva_product_compare_button button background--light" data-pid="{{- my_product.handle -}}_sp_{{- my_product.id -}}" data-original-title="{{-  "products.compare.add_to_compare" | t -}}" data-added="{{-  "products.compare.added_compare" | t -}}" data-title="{{-  "products.compare.add_to_compare" | t -}}">{{-  "products.compare.add_to_compare" | t -}}</a>
+  {%- endif -%}
+  {%- assign shop_second_image = false -%}
+  {%- if my_product.images.size > 1 and settings.shop_second_image != '' -%}
+    {%- assign shop_second_image = true -%}
+  {%- endif -%}
+  <div class="product_thumbnail{% if shop_second_image %} with_second_image{% endif %}">
+    <span class="button-loader"></span>
+    <a class="aspect-product__wrapper" href="{{ my_product.url | within: collection }}">
+      <div class="aspect-product__spacer"><div class="aspect-product__spacer-inner"></div></div>
+      <div class="aspect-product__images">
+        {%- if shop_second_image -%}
+        <span class="product_thumbnail_secondary" style="background-image:url({{ my_product.images[1] | product_img_url:'500x' }});"></span>
+        {%- endif -%}
+        <img class="aspect-product__picture" src="{{ featured_image | product_img_url: '166x' }}" alt="{{ my_product.title | escape }}" srcset="{{ featured_image | product_img_url: '500x' }} 500w, {{ featured_image | product_img_url: '166x' }} 166w" sizes="(max-width: 500px) 100vw, 500px" />
+        {%- if my_product.available == false -%}
+        <span class="out_of_stock_title">{{ 'products.general.out_of_stock' | t | escape }}</span>
+        {%- endif -%}
+      </div>
+    </a>
+    {%- if my_instructions.countdown != blank -%}
+    <div class="countdown flex-container countdown-item" data-countdown="{{my_instructions.countdown}}">
+    {%- endif -%}
+  </div>
+  
+  {%- if settings.catalog_mode == '' -%}
+    {%- if current_variant.compare_at_price > current_variant.price -%}
+    <span class="ribbon onsale">
+      <span>
+      {%- if settings.shop_sale_percentages != '' -%}
+      -{{ current_variant.compare_at_price | minus:current_variant.price | times:100.0 | divided_by:current_variant.compare_at_price | money_without_currency | times:100 | remove:'.0' }}%
+      {%- else -%}
+      {{- 'products.general.sale' | t | escape -}}
+      {%- endif -%}
+      </span>
+    </span>
+    {%- endif -%}
+  {%- endif -%}
+  
+  {%- if settings.shop_review != '' -%}
+  <div class="star-rating"><span class="shopify-product-reviews-badge" data-id="{{ my_product.id }}"></span></div>
+  {%- endif -%}
+  
+  {%- if settings.shop_collection != '' and my_product.collections.size > 0 -%}
+    {%- if settings.shop_collection == '1' -%}
+  	
+    {%- assign category = false -%}
+    {%- if my_product.collections[0].handle != 'all' -%}
+      {%- assign category = my_product.collections[0] -%}
+    {%- elsif my_product.collections.size > 1 -%}
+      {%- assign category = my_product.collections[1] -%}
+    {%- endif -%}
+
+  
+  
+  
+    <!-- OLD NOT WORKING CATEGORY TITLE --
+--------------------------------------------
+{%- if category != false -%}
+    <p class="product-category-listing">
+      <a href="{{ category.url }}" class="product-category-link">{{ category.title }}</a>
+    </p>
+    {%- endif -%}
+
+
+    {%- else -%}
+    <p class="product-category-listing">
+      {%- for category in my_product.collections -%}
+        {%- if category.handle != 'all' -%}
+          <a href="{{ category.url }}" class="product-category-link">{{ category.title }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </p>
+    {%- endif -%}
+  {%- endif -%}
+
+-------------------------------------->
+  
+  
+   <p class="product-category-listing">
+      <a href="{{ my_product.url }}" class="product-category-link">{{ my_product.type | remove: 'SweetLegs ' }}</a>
+    </p>
+  
+  
+  
+  <div class="shop_product_metas">
+    <div class="add-to-wishlist">
+      <div class="add-button show">
+        {%- include 'wishlist' with true -%}
+      </div>
+    </div>
+    <div class="clear"></div>
+    <h3><a class="shop_product_title" href="{{ my_product.url | within: collection }}">{{ my_product.title | escape }}{% if current_variant.sku != '' %}<span class="woos_sku">{{ current_variant.sku }}</span>{% endif %}</a></h3>
+    {%- include 'product-color-swatch' -%}
+    <div class="product_after_shop_loop">
+      <div class="product_after_shop_loop_switcher">
+        <div class="product_after_shop_loop_price">
+          <span class="price">
+       
+            
+            
+
+
+{% include 'wholesaleProductDiscount' %}
+
+            
+{% if customer.tags contains "distributor" or customer.tags contains "Distributor" and count >= 25 %}
+           						{% if discount_percent > 0 and my_product.type == "SweetLegs Petite"  or my_product.type == "SweetLegs Kids"  or my_product.type == "SweetLegs Plus"  or my_product.type == "SweetLegs One Size" %}
+            						{% if my_product.tags contains 'c1' %}
+            							{% assign discount_percent = 0.6 %}
+            						{% elsif my_product.tags contains 'c2' %}
+            							{% assign discount_percent = 0.7 %}
+            						{% elsif my_product.tags contains 'c3' %}
+            							{% assign discount_percent = 0.77 %}
+            						{% elsif my_product.tags contains 'c4' %}
+            							{% assign discount_percent = 0.84 %}
+            						{% endif %}
+            
+            						{% assign new_price = current_variant.price | times: discount_percent %}
+                                    {% assign final_price = current_variant.price | minus: new_price %}
+
+                                    <span class="price-old money">{{ current_variant.price | money }}</span>
+                                    <span class="price-new money">{{ final_price | money }}</span>
+            				
+            					{% else %}
+			                     {%- if current_variant.compare_at_price > current_variant.price -%}
+                                <span class="price-old money">{{ current_variant.compare_at_price | money }}</span>
+                                {%- endif -%}
+                                <span class="price-new money">{{ current_variant.price | money }}</span>
+            
+            					{% endif %}
+{% else %}                
+<!-- if person is NOT ID -->           
+            
+                     {%- if current_variant.compare_at_price > current_variant.price -%}
+                                <span class="price-old money">{{ current_variant.compare_at_price | money }}</span>
+                                {%- endif -%}
+                                <span class="price-new money">{{ current_variant.price | money }}</span>
+ 
+{% endif %} 
+          
+            
+            
+            
+          </span>
+        </div>
+        {%- if settings.catalog_mode == '' -%}
+        <div class="product_after_shop_loop_buttons">
+         
+          {%- if my_product.available -%}
+            {%- if my_product.variants.size > 1 -%}
+            <a rel="nofollow" href="{{ my_product.url | within: collection }}" class="button product_type_variable">
+              <span class="button-loader"></span>
+              {{- 'products.product.select_options' | t | escape -}}
+            </a>
+            {%- else -%}
+            <form action="/cart/add" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="quantity" value="1" />
+              <select class="hide" name="id">
+                {%- for variant in my_product.variants -%}
+                <option value="{{ variant.id }}">{{ variant.title | escape}} - {{variant.price | money }}</option>
+                {%- endfor -%}
+              </select>
+             <button class="click"> <a rel="nofollow" href="{{ my_product.url | within: collection }}" class="button product_type_simple add_to_cart_button ajax_add_to_cart">
+                <span class="button-loader"></span>
+              
+                {{- 'products.product.add_to_cart' | t | escape -}}
+               </a></button>
+            </form>
+            {%- endif -%}
+          {%- else -%}
+          <a rel="nofollow" href="{{ my_product.url | within: collection }}" class="button product_type_simple">
+            <span class="button-loader"></span>
+            {{- 'products.product.read_more' | t | escape -}}
+          </a>
+          {%- endif -%}
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+

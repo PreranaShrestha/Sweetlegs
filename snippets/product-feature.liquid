@@ -1,0 +1,25 @@
+{%- assign roar360 = product.metafields.roar360 -%}
+<div class="product-additional-galleries">
+  {%- if instructions.video != blank -%}
+  <div class="product-video-button">
+    <a href="{{- instructions.video -}}"><span class="eva-tooltip"><span class="eva-tooltip-label">{{- 'products.product.video_btn' | t | escape -}}</span></span></a>
+  </div>
+  {%- endif -%}
+  {%- if roar360.roar360view_enabled == '1' -%}
+  <div class="product-360-button">
+    <a href="#product-360-view-{{- section.id -}}"><span class="eva-tooltip"><span class="eva-tooltip-label">{{- 'products.product.360_btn' | t | escape -}}</span></span></a>
+  </div>
+  <div id="product-360-view-{{- section.id -}}" class="product-360-view-wrapper mfp-hide">
+    <div class="eva-threed-view threed-id-{{- section.id -}}" 
+         data-_script_id="threed-id-{{- section.id -}}">
+      <ul class="threed-view-images"></ul>
+      <div class="spinner"><span>0%</span></div>
+    </div>
+    {%- unless roar360.roar360view_json == blank -%}
+    <script type="application/json" id="threed-id-{{- section.id -}}">
+    {{- roar360.roar360view_json -}}
+    </script>
+    {%- endunless -%}
+  </div>
+  {%- endif -%}
+</div>

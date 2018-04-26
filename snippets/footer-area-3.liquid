@@ -1,0 +1,17 @@
+<div class="row small-up-1 large-up-3">
+  <div class="column column-widget {{ section.settings.footer_1_align }}">
+    {%- if section.settings.footer_1_content != '' -%}
+      {%- include 'shortcode' load: section.settings.footer_1_content -%}
+    {%- endif -%}
+  </div>
+  <div class="column column-widget {{ section.settings.footer_2_align }}">
+    {%- if section.settings.footer_2_content != '' -%}
+      {%- include 'shortcode' load: section.settings.footer_2_content -%}
+    {%- endif -%}
+  </div>
+  <div class="column column-widget {{ section.settings.footer_3_align }}">
+    {%- if section.settings.footer_3_content != '' -%}
+      {%- include 'shortcode' load: section.settings.footer_3_content -%}
+    {%- endif -%}
+  </div>                                            
+</div>

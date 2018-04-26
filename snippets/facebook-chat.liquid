@@ -1,0 +1,30 @@
+{%- if settings.fbchat_enable -%}
+<div id="fbchat" class="{{ settings.fbchat_position }}">
+  <div class="fbchat-badge">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Facebook_Messenger" x="0px" y="0px" width="322px" height="324px" viewBox="96 93 322 324" style="enable-background:new 96 93 322 324;" xml:space="preserve" class="fbchat-badge-btn">
+      <path style="fill:#0084FF;" d="M257,93c-88.918,0-161,67.157-161,150c0,47.205,23.412,89.311,60,116.807V417l54.819-30.273    C225.449,390.801,240.948,393,257,393c88.918,0,161-67.157,161-150S345.918,93,257,93z M273,295l-41-44l-80,44l88-94l42,44l79-44    L273,295z"/>
+    </svg>
+  </div>
+  <div class="fb-sheet">
+    <div class="fb-sheet-head">
+      <div class="fb-sheet-head-inner">{{ settings.fbchat_title }}</div>
+      <a href="#" class="fb-sheet-head-close"></a>
+    </div>
+    <div class="fb-sheet-body"></div>
+    <div class="fb-sheet-content">
+      <div class="fb-sheet-content-inner" data-timeline="{{ settings.fbchat_timeline }}" data-events="{{ settings.fbchat_events }}" data-page="{{ settings.fbchat_page | escape }}">
+        <div class="fb-sheet-content-part"></div>
+      </div>
+    </div>
+    <div class="fb-sheet-footer"></div>
+  </div>
+</div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+{%- endif -%}

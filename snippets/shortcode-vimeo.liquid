@@ -1,0 +1,3 @@
+{%- capture my_video_link -%}{% include 'shortcode-render' render:'video' default:'176916362' %}{%- endcapture -%}
+{%- assign my_video = my_video_link | split: '/' -%}
+<iframe src="//player.vimeo.com/video/{{ my_video | last }}" width="{% include 'shortcode-render' render:'width' default:'640' %}" height="{% include 'shortcode-render' render:'height' default:'360' %}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>

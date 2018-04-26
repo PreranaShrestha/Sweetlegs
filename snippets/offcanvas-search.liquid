@@ -1,0 +1,51 @@
+<div id="search-section">
+  <div class="search-desktop">
+    <div class="offcanvas_close"></div>
+    <h2 class="search-title">{{ 'searchs.search.title' | t | escape }}</h2>
+    <form role="search" method="get" class="search-form" action="/search">
+      <div class="minimal-form-input no-text">
+        <label class="screen-reader-text" for="product-search-field">
+          <span class="text"><span class="text-inner">{{ 'searchs.search.search_for' | t | escape }}</span></span>
+        </label>
+        <input type="search" id="product-search-field" class="search-field" name="q" autocomplete="off" />
+      </div>
+      <input type="submit" value="{{ 'searchs.search.submit' | t | escape }}" />
+      <input type="hidden" name="type" value="product" />
+    </form>
+    <div class="suggestion_results">
+      <div class="search_suggestion">
+        <div class="suggestion_hint">{{ 'searchs.search.hint_html' | t }}</div>
+        {%- if section.settings.header_search_featured != '' -%}
+        <p class="suggestion_pinnedtitle">{{ 'searchs.search.featured_products' | t | escape }}</p>
+        <div class="suggestion_unlisted">
+          {%- assign my_collection = collections[section.settings.header_search_featured] -%}
+          {%- for my_product in my_collection.products limit: section.settings.header_search_limit -%}
+          {%- assign my_variant = my_product.selected_or_first_available_variant -%}
+          {%- assign featured_image = my_variant.featured_image | default: my_product.featured_image -%}
+          <div class="suggestion_item">
+            <a href="{{ my_product.url | within: my_collection }}">
+              <div class="suggestion_div"><img class="suggestion_img" src="{{ featured_image | img_url: '150x150' }}" alt="{{ my_product.title | escape }}" /></div>
+              <div class="suggestion_titlediv">
+                {{- my_product.title | escape -}}
+                {%- if my_variant.sku != '' -%}
+                <span class="woos_sku">{{ my_variant.sku }}</span><br />
+                {%- endif -%}
+                <small><span class="money">{{ my_variant.price | money }}</span></small>
+              </div>
+            </a>
+          </div>
+          {%- endfor -%}
+        </div>
+        <p class="suggestion_more"><a class="button btn1" href="{{ my_collection.url }}"><span>{{ 'searchs.search.view_more' | t | escape }}</span></a></p>
+        {%- endif -%}
+      </div>
+      <div class="search_result">
+        <div class="text-center loading">
+          <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw margin-bottom"></i>
+        </div>
+        <div class="suggestion_unlisted"></div>
+        <p class="suggestion_more"><a class="button btn1" href="/search"><span>{{ 'searchs.search.view_more' | t | escape }}</span></a></p>
+      </div>
+    </div>
+  </div>
+</div>

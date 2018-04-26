@@ -1,0 +1,47 @@
+<footer id="site-footer">
+  {%- if settings.footer_instagram != '' -%}
+  your instagram feed here
+  {%- endif -%}
+  
+  {%- if settings.footer_area != '' -%}
+  <div class="f-columns widget-area">
+    {%- case settings.footer_area -%}
+    {%- when '1' -%}
+      {%- include 'footer-area-1' -%}
+    {%- when '2' -%}
+      {%- include 'footer-area-2' -%}
+    {%- when '3' -%}
+      {%- include 'footer-area-3' -%}
+    {%- when '4' -%}
+      {%- include 'footer-area-4' -%}
+  	{%- when '5' -%}
+      {%- include 'footer-area-5' -%}
+    {%- when '6' -%}
+      {%- include 'footer-area-6' -%}
+    {%- when '7' -%}
+      {%- include 'footer-area-7' -%}
+    {%- when '8' -%}
+      {%- include 'footer-area-8' -%}
+  	{%- when '9' -%}
+      {%- include 'footer-area-9' -%}
+    {%- endcase -%}
+  </div>
+  {%- endif -%}
+  <div class="f-copyright">
+    <div class="row">
+      <div class="medium-12 columns socials">
+        <div class="footer-divider"></div>
+        {%- if settings.footer_social != '' -%}
+          {%- include 'shortcode' load: settings.footer_social_content -%}
+        {%- endif -%}            
+      </div>
+      {%- if settings.footer_copyright != '' -%}
+      <div class="medium-12 columns copytxt">
+        <p class="copyright">
+          {{ settings.footer_copyright }}
+        </p>
+      </div>
+      {%- endif -%}
+    </div>    
+  </div> 
+</footer>

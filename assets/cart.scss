@@ -1,0 +1,63 @@
+@media only screen and (max-width: 39.9375em) {
+  .row {
+    padding: 0px;
+  }
+  div.item_title{   
+    font-size: .6rem;   
+  }
+  span.remove{
+    font-size: 5px;    
+  }
+  td.product-thumbnail {
+    min-widht: 300px;
+  }
+  td.product-name{
+    min-width: 130px;
+  }
+  td.product-price{
+    max-width: 30px;
+  }
+  td.product-quantity{
+    max-width: 80px;
+    font-size: 10px;
+    text-align: left;
+  }  
+ .quantity input.qty {
+    font-size: .6rem;
+    height: .9rem;
+  }
+  div.cart_meta{
+    front-size: .2rem;
+  }
+  .product-price{
+    width: 400px;
+  }
+  .product-remove {
+    max-width: 20px;
+  }
+  .template-cart .entry-content .shopping-cart .cart-form table tbody td.product-subtotal {
+      padding: 0px;
+      text-align: right;
+      font-size: 0.8rem;
+  }
+  .template-cart .entry-content .shopping-cart .cart-form table tbody td.product-name {
+      font-size: 0.2rem;
+      padding-left: 3px;
+  }
+  .template-cart .entry-content .shopping-cart .cart-form table tbody td.product-price {  
+      text-align: right;
+      font-size: 0.8rem;
+  }
+  .template-cart .entry-content .shopping-cart .cart-form table tbody td.product-thumbnail img {  
+      max-width:30px;
+      max-height:30px; 
+  }
+  .template-cart .entry-content .shopping-cart .cart-form table tbody td.product-name .variation {  
+      margin: 0px    
+  }  
+  .quantity.cartQty .input-text.qty.text {
+     font-size: .8rem;
+     width: 1.5rem !important;
+  }
+ 
+}

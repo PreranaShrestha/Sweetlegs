@@ -1,0 +1,15 @@
+{%- capture icon_render -%}{% include 'shortcode-render' render:'icons' %}{%- endcapture -%}
+{%- assign my_icons = icon_render | remove: ' ' | split: ',' -%}
+{%- assign default_icons = 'twitter,facebook,googleplus,pinterest,instagram,tumblr,snapchat,youtube,vimeo' -%}
+{%- if my_icons.size > 0 -%}
+<ul class="social-icons">
+  {%- for icon in my_icons -%}
+    {%- if default_icons contains icon -%}
+    <li class="{{ icon }}">
+      {%- assign setting_icon = 'social_' | append: icon | append: '_link' -%}
+      <a target="_blank" href="{{ settings[setting_icon] | escape }}"></a>
+    </li>
+    {%- endif -%}
+  {%- endfor -%}
+</ul>
+{%- endif -%}

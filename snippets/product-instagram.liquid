@@ -1,0 +1,16 @@
+{%- assign my_instagram = instructions.instagram_token | split: '.' -%}
+<div class="single_product_summary_related">
+  <div class="row">
+    <div class="xlarge-9 xlarge-centered columns">
+      <div class="footer-instagram-section">
+        <ul id="product-instagram" class="instagram-pics instagram-size-small"
+            data-id="{{- my_instagram.first | escape -}}" 
+            data-token="{{- instructions.instagram_token | escape -}}"
+            data-limit="{{- instructions.instagram_limit | plus:0 -}}"></ul>
+        {%- if instructions.instagram_btn != blank and instructions.instagram_username != blank -%}
+        <p class="clear"><a href="//instagram.com/{{- instructions.instagram_username | escape -}}" rel="me" target="_self">{{- instructions.instagram_btn -}}</a></p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

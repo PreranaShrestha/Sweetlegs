@@ -1,0 +1,169 @@
+<div id="topbar" class="topbar">
+  <div class="row">
+    <div class="topbar-content medium-6 columns text-left">
+      {%- if section.settings.header_currency != '' -%}
+      <nav class="language_currency">
+        {%- assign codes = 'USD,EUR,GBP,CAD,ARS,AUD,BBD,BDT,BSD,BHD,BRL,BOB,BND,BGN,ILS,MMK,KYD,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,XPF,FJD,GHS,GTQ,GYD,GEL,HKD,HUF,ISK,INR,IDR,NIS,JMD,JPY,JOD,KZT,KES,KWD,LVL,LTL,MXN,MYR,MUR,MDL,MAD,MNT,MZN,ANG,NZD,NGN,NOK,OMR,PKR,PYG,PEN,PHP,PLN,QAR,RON,RUB,SAR,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TRY,UAH,AED,UYU,VEB,VND,ZMK' | split: ',' -%}
+        {%- assign supported_codes = section.settings.supported_currencies | split: ' ' -%}
+        <ul class="menu-item currency_switcher curr_list_vertical">
+          <li data-code="{{ shop.currency }}" class="currency active">{{ shop.currency }}</li>
+          {%- for code in supported_codes -%}
+          {%- if code != shop.currency and codes contains code -%}
+          <li data-code="{{ code }}" class="currency">{{ code }}</li>
+          {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        <input type="hidden" class="currency_format" value="{{ section.settings.currency_format | default: 'money_with_currency_format' | escape }}" />
+        <input type="hidden" class="shop_currency" value="{{ shop.currency | escape }}" />
+        <input type="hidden" class="default_currency" value="{{ section.settings.default_currency | default: shop.currency | escape }}" />
+        <input type="hidden" class="money_with_currency_format" value="{{ shop.money_with_currency_format | strip_html | escape }}" />
+        <input type="hidden" class="money_format" value="{{ shop.money_format | strip_html | escape }}" />
+      </nav>
+      {%- endif -%}
+      
+      {%- if section.settings.header_contact != '' -%}
+      <div class="menu-item header-contact">
+        {%- if section.settings.header_contact_icon != '' -%}
+        <i class="header-contact-icon"></i>
+        {%- endif -%}
+        <div class="header-contact-desc">
+          {%- if section.settings.header_contact_subtitle != '' -%}
+          <span>{{ section.settings.header_contact_subtitle | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.header_contact_title != '' -%}
+          <h3>{{ section.settings.header_contact_title | escape }}</h3>
+          {%- endif -%}
+        </div>
+      </div>
+      {%- endif -%}
+      <div class="">
+        <a href="#" class="store-switcher-cad" style="color:inherit">CAD</a> | 
+        <a href="#" class="store-switcher-usd" style="color:inherit">USD</a>
+      </div>
+    </div>
+    <div class="topbar-menu medium-6 columns text-right">
+      <div class="topbar-menu-container">
+        <ul class="topbar-menu">
+          {%- if settings.product_wishlist != '' -%}
+          <li class="menu-item wishlist-button">
+            <a class="tools_button" href="{{ pages[settings.product_wishlist].url }}">
+              {{ 'header.my_account.wishlist' | t }}
+            </a>
+          </li>
+          {%- endif -%}
+          {%- if shop.customer_accounts_enabled -%}
+          {%- if customer -%}
+          {% if customer.tags contains "distributor" or customer.tags contains "Distributor" %}
+           <li class="menu-item ">
+            <a href="/pages/bulk-order-form">
+              {{ 'Quick Order Form'}}
+            </a>
+          </li>
+          {% endif %}
+          <li class="menu-item account-button">
+            <a href="/account">
+              {{ 'header.my_account.my_account' | t }}
+            </a>
+          </li>
+          <li class="menu-item logout-button">
+            <a href="/account/logout">
+              {{ 'header.my_account.logout' | t }}
+            </a>
+          </li>
+          {%- else -%}
+          <li class="menu-item login-button">
+            <a href="/account">
+              {{ 'header.my_account.login_registry' | t }}
+            </a>
+          </li>
+          {%- endif -%}
+          {%- endif -%}
+          {%- if section.settings.header_social != '' -%}
+          <li class="menu-item social-button">
+            {%- include 'shortcode' load: section.settings.header_social_content -%}
+          </li>
+          {%- endif -%}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<header id="masthead" class="header-v2 site-header animate-search{% if header_sticky == true %} sticky{% endif %}" data-my-sticky="{{ header_sticky }}" data-my-sticky-scroll="{{ header_sticky_scroll }}" data-my-sticky-mobile="{{ header_sticky_mobile }}">
+  <div class="header-wrapper row">
+    <div class="nav">
+      <div class="header-nav">
+        <div data-toggle="offcanvas" data-target="menu-offcanvas" data-src="left" class="menu-trigger menu_trigger_{{ section.settings.menu_trigger }}">
+          <div><span></span></div>
+          {%- if section.settings.menu_trigger == '1' -%}
+          <span class="menu-title">{{ 'header.other.menu' | t | escape }}</span>
+          {%- endif -%}
+        </div>
+        {%- include 'offcanvas-menu' -%}
+      </div>
+    </div>
+    <div class="site-branding">
+      {%- comment -%}
+      Use the uploaded logo from theme settings if enabled.
+      Site name gets precedence with H1 tag on homepage, div on other pages.
+      {%- endcomment -%}
+      <{% if template.name == 'index' %}h1{% else %}div{% endif %} class="site-logo" itemscope itemtype="http://schema.org/Organization">
+        <a itemprop="url" href="{{ shop.url }}" title="{{ shop.name | escape }}" rel="home">
+          {%- capture image_size -%}x{{ settings.main_logo_height }}{%- endcapture -%}
+
+          <img src="{{ 'logo-svg.svg' | asset_url }}" width="{{section.settings.logo_max_width}}" alt="{{ shop.name }}" itemprop="logo"> 
+          
+        </a>
+        </{% if template.name == 'index' %}h1{% else %}div{% endif %}>
+    </div>
+    <div class="nav2">
+      <ul class="list-item">
+        {%- if section.settings.header_menu != '' -%}
+          {%- for link in linklists[section.settings.header_menu].links -%}
+            {%- include 'navigation-link' -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    </div>
+    <div class="tools">
+      <ul>
+        {%- if section.settings.header_search != '' -%}
+        <li class="search-button">
+          <a href="/search" data-toggle="offcanvas" data-target="search-offcanvas" data-src="right" class="cd-search-trigger cd-text-replace">
+            <i class="search-button-icon"></i>
+          </a>
+          {%- include 'offcanvas-search' -%}
+        </li>
+        {%- endif -%}
+        {%- if settings.product_wishlist != '' -%}
+        <li class="wishlist-button">
+          <a href="{{ pages[settings.product_wishlist].url }}">
+            <i class="wishlist-button-icon"></i>
+            <span class="wishlist_items_number counter_number animated rubberBand">{% if customer %}{{ customer.metafields.wishlist | size | default:0 }}{% else %}0{% endif %}</span>
+          </a>
+        </li>
+        {%- endif -%}
+        {%- if settings.catalog_mode == '' -%}
+        <li class="cart-button">
+            <a href="/cart" 
+             
+             {% if customer.tags == blank %}
+             data-toggle="offcanvas" data-target="cart-offcanvas"
+             {% else %}
+             {% endif %}
+            
+              data-src="right">
+            <div class="cart-desc">
+              <span class="cart_total">
+                <span class="amount"><span class="money">{{ cart.total_price | money }}</span></span>
+              </span>
+              {{ 'header.cart.title' | t | escape }}
+            </div>
+            <i class="cart-button-icon"></i>
+            <span class="cart_items_number counter_number animated rubberBand">{{ cart.item_count }}</span>
+          </a>
+        </li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+</header>

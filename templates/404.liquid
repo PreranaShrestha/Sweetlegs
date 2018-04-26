@@ -1,0 +1,28 @@
+<div id="primary" class="content-area">
+  {%- include 'page-header' -%}
+  <div class="row">
+    <div class="large-9 large-centered columns">
+      <main id="main" class="site-main">
+        <header class="page-header oops-header">
+          <h1 class="page-title">{{ 'general.404.title' | t }}</h1>
+          <h2 class="page-sub-title">{{ 'general.404.subtext' | t }}</h2>
+        </header>
+        <section class="error-404 not-found">
+          <div class="page-content">
+            <p>{{ 'general.404.subtext_2' | t | escape }}</p>
+            <form role="search" method="get" class="search-form" action="/search">    
+              <div class="minimal-form-input no-text">
+                <label class="screen-reader-text" for="404-search-field">
+                  <span class="text"><span class="text-inner">{{ 'searchs.search.search_for' | t | escape }}</span></span>
+                </label>
+                <input type="search" id="404-search-field" class="search-field" value="{{ search.terms | escape }}" name="q" />
+              </div>
+              <input class="search-submit" type="submit" value="{{ 'searchs.search.submit' | t | escape }}" />
+              <input type="hidden" name="type" value="product" />
+            </form>
+          </div>                       
+        </section>
+      </main>
+    </div>
+  </div>
+</div>

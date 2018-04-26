@@ -1,0 +1,106 @@
+{%- if section.blocks.size > 0 -%}
+<div id="product-tabs-{{ section.id }}" class="page-width" data-section-id="{{ section.id }}" data-section-type="product-tabs">
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="product-tabs">
+        <ul class="tabs">
+        {%- for block in section.blocks limit: section.blocks.size -%}
+          <li{% if forloop.index == 1 %} class="active"{% endif %}><a href="#tab-{{ section.id }}-{{ forloop.index }}">{{ block.settings.heading }}</a></li>
+        {%- endfor -%}
+        </ul>
+
+        {%- for block in section.blocks limit: section.blocks.size -%}
+        <div id="tab-{{ section.id }}-{{ forloop.index }}" class="panel" style="display:{% if forloop.index == 1 %}block{% else %}none{% endif %}">
+          {%- assign my_shortcode = '' -%}
+
+          {%- if block.settings.layout == 'listing' -%}
+          {%- assign my_shortcode = '[products' -%}
+          {%- else -%}
+          {%- assign my_shortcode = '[products-slider' -%}
+          {%- endif -%}
+
+          {%- assign my_shortcode = my_shortcode | append: ' title="" collection="' | append: block.settings.collection | append: '" limit="' | append: block.settings.limit | append: '" columns="' | append: block.settings.columns | append: '"]' -%}
+
+          {%- include 'shortcode' load: my_shortcode -%}
+        </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Products tab",
+    "class": "index-section",
+    "settings": [
+    ],
+    "blocks": [
+      {
+        "type": "tab_collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Tab name"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "min": 2,
+            "max": 20,
+            "step": 1,
+            "label": "Number of Products",
+            "default": 8
+          },
+          {
+            "type": "range",
+            "id": "columns",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "label": "Products per Row",
+            "default": 4
+          },
+          {
+            "type": "select",
+            "id": "layout",
+            "label": "Layout",
+            "options": [
+              {
+                "value": "listing",
+                "label": "Listing"
+              },
+              {
+                "value": "slider",
+                "label": "Slider"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product tabs",
+        "category": "Product",
+        "blocks": [
+          {
+            "type": "tab_collection"
+          },
+          {
+            "type": "tab_collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

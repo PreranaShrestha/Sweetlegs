@@ -1,0 +1,106 @@
+  {% assign opts = '' %}
+                     {% for option in product.options_with_values     %}
+                         {% assign opts = option.name %} 
+                     {% endfor %}
+           
+              {% if opts == 'Title'  %}
+                {% for variant in product.variants %}
+                    <tr class="" data-name="{{ product.title | downcase }}" data-tag="{{ product.tags  }}">
+                      <td class="prodListImg">
+                        <a href="{{ variant.url | collection }}">
+                          <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
+                        </a>
+                      </td>
+                      <td>
+                        
+                        <a href="{{ variant.url | collection }}">
+                         <strong>{{ product.title }}</strong>{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}
+                        </a>
+                      </td>
+                      <td>                        
+                      	{% include "discountWholesale" %}
+                      </td>
+                      <!--<td>
+                         {{ variant.price | money }} {{ product.line_price }}
+
+                      </td>-->
+                      
+                      <td class="prodListQty" style="text-align:center;">
+						<input class='variantId' type='hidden'  name="quantity" value="{{variant.id}}" />
+
+                       <i class="fa fa-minus prodListMinus" aria-hidden="true"></i>
+                          {% if variant.available %}
+                            {% assign vID = variant.id %}
+                                   {% assign xQTY = 0 %}
+                                   {% for item in cart.items %}
+                                     {% if item.variant.id == vID  %}
+                                        {% assign xQTY = item.quantity %}
+                                     {% endif %}
+                                  {% endfor %}
+                                  <input data-info=0  data-name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" max="{{ variant.inventory_quantity }}" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ xQTY }}" tabindex="1" />
+
+                          {% else %}
+                            <small>Out of Stock</small>
+                          {% endif %}
+                        <i class="fa fa-plus prodListPlus" aria-hidden="true"></i>
+    
+    
+    
+                      </td>
+                    </tr>
+                {% endfor %}
+			 {% else %}
+                    <tr class="parent" data-name="{{ product.title | downcase }}" data-tag="{{ product.tags   }}">
+                      <td class="prodListImg">
+                        <a href="{{ product.url | collection }}">
+                          <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
+                        </a>
+                      </td>
+                      <td colspan="3">
+    
+                        <a href="{{ product.url | collection }}">
+                         <strong>{{ product.title }}</strong>
+                        </a>
+                      </td>
+                      
+                    </tr>
+                {% for variant in product.variants %}
+                    <tr class="sub" data-name="{{ product.title | downcase }}" data-tag="{{ product.tags   }}">
+                      <td>
+                        <a href="{{ variant.url | collection }}">
+                          <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
+                        </a>
+                      </td>
+                      <td>
+    
+                        <a href="{{ variant.url | collection }}">
+                         <!-- {{ product.title }} -  -->{% unless variant.title contains 'Default' %}{{ variant.title }}{% endunless %}
+                        </a>
+                      </td> <td>
+                      	{% include "discountWholesale" %}
+                      </td>
+                      <!--<td>
+                         {{ variant.price | money }}
+                      </td>-->
+                      <td class="prodListQty" style="text-align:center;">
+						<input class='variantId' type='hidden'  name="quantity" value="{{variant.id}}" />
+                        <i class="fa fa-minus prodListMinus" aria-hidden="true"></i>
+                          {% if variant.available %}
+                            {% assign vID = variant.id %}
+                                   {% assign xQTY = 0 %}
+                                   {% for item in cart.items %}
+                                     {% if item.variant.id == vID  %}
+                                        {% assign xQTY = item.quantity %}
+                                     {% endif %}
+                                  {% endfor %}
+                                  <input data-info=0  data-name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" max="{{ variant.inventory_quantity }}" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ xQTY }}" tabindex="1" />
+
+                          {% else %}
+                            <small>Out of Stock</small>
+                          {% endif %} 
+                     <i class="fa fa-plus prodListPlus" aria-hidden="true"></i>
+    
+                      </td>
+                    </tr>
+                {% endfor %}
+                 {% endif %}

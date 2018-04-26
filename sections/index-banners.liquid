@@ -1,0 +1,197 @@
+<div class="page-width" data-section-id="{{ section.id }}" data-section-type="banners">
+  <div class="row">
+    <div class="large-12 columns banners_{{ section.settings.space }}">
+      {%- if section.settings.heading != blank -%}
+      <h2 class="shortcode_title">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      
+      {%- if section.blocks.size > 0 -%}
+       <div class="row">
+        {%- for block in section.blocks limit: section.blocks.size -%}
+        {%- if block.settings.url != blank -%}
+        <a href="{{block.settings.url}}">
+        {%- endif -%}
+          <div class="medium-{{ block.settings.width }} columns">
+            <div class="shortcode_banner banner_with_img">
+              <div class="shortcode_banner_inner">
+                <div class="shortcode_banner_bkg" style="background-color:{{ block.settings.background }};{% if block.settings.image %}background-image:url({{ block.settings.image | img_url: 'master' }});background-position-y:{{ block.settings.alignment }};{% endif %}"></div>
+                <div class="shortcode_banner_inside" style="height:{{ block.settings.height | plus:0 }}px;border:{{ block.settings.border }}px solid {{ block.settings.color }};">
+                  <div class="shortcode_banner_content" style="color:{{ block.settings.color }};">
+                    {%- if block.settings.heading != '' -%}
+                    <div class="shortcode_banner_heading">
+                      {{- block.settings.heading -}}
+                    </div>
+                    {%- endif -%}
+
+                    {%- if block.settings.heading != '' and block.settings.caption != '' -%}
+                    <div class="shortcode_banner_sep" style="background-color:{{ block.settings.color }};"></div>
+                    {%- endif -%}
+
+                    {%- if block.settings.caption != '' -%}
+                    <div class="shortcode_banner_caption">
+                      {{- block.settings.caption -}}
+                    </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- if block.settings.url != blank -%}
+        </a>
+        {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- else -%}
+        {%- include 'no-blocks' -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Banners",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Banners"
+      },
+      {
+        "type": "range",
+        "id": "space",
+        "min": 0,
+        "max": 60,
+        "step": 5,
+        "unit": "px",
+        "label": "Space between banners",
+        "default": 15
+      }
+    ],
+    "blocks": [
+      {
+        "type": "featured_banner",
+        "name": "Banner",
+        "settings": [
+          {
+            "label": "Background image",
+            "id": "image",
+            "type": "image_picker"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Image alignment",
+            "default": "top",
+            "options": [
+              {
+                "value": "top",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Middle"
+              },
+              {
+                "value": "bottom",
+                "label": "Bottom"
+              }
+            ]
+          },
+          {
+            "label": "Width",
+            "id": "width",
+            "type": "select",
+            "default": "6",
+            "options": [
+              {
+                "value": "3",
+                "label": "25%"
+              },
+              {
+                "value": "4",
+                "label": "33%"
+              },
+              {
+                "value": "6",
+                "label": "50%"
+              },
+              {
+                "value": "8",
+                "label": "67%"
+              },
+              {
+                "value": "9",
+                "label": "75%"
+              },
+              {
+                "value": "12",
+                "label": "100%"
+              }
+            ]
+          },
+          {
+            "label": "Height (px)",
+            "id": "height",
+            "type": "text",
+            "default": "230"
+          },
+          {
+            "label": "Heading",
+            "id": "heading",
+            "type": "html"
+          },
+          {
+            "label": "Caption",
+            "id": "caption",
+            "type": "html"
+          },
+          {
+            "label": "URL",
+            "id": "url",
+            "type": "url"
+          },
+          {
+            "type": "range",
+            "id": "border",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "label": "Inner stroke thickness",
+            "default": 0
+          },
+          {
+            "label": "Background color",
+            "id": "background",
+            "type": "color",
+            "default": "#cccccc"
+          },
+          {
+            "label": "Text color",
+            "id": "color",
+            "type": "color",
+            "default": "#000000"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banners",
+        "category": "Image",
+        "blocks": [
+          {
+            "type": "featured_banner"
+          },
+          {
+            "type": "featured_banner"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

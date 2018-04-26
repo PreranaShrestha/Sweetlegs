@@ -1,0 +1,146 @@
+<div id="collections-{{ section.id }}" class="page-width{% if section.settings.padding != blank %} has-padding{% endif %}" data-section-id="{{ section.id }}" data-section-type="collections">
+  <div class="row"{% if section.settings.padding != blank %} style="padding:0 {{ section.settings.padding }};"{% endif %}>
+    <div class="large-12 columns">
+      {%- if section.settings.heading != blank -%}
+      <h2 class="shortcode_title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+      	{%- assign my_class = section.settings.hover | append: ' ' -%}
+      	{%- if section.settings.layout == 'listing' -%}
+          {%- case section.settings.columns -%}
+            {%- when 6 -%}
+              {%- assign collections_per_row = 6 -%}
+              {%- assign collections_per_row_xl = 6 -%}
+              {%- assign collections_per_row_l = 6 -%}
+              {%- assign collections_per_row_m = 3 -%}
+            {%- when 5 -%}
+              {%- assign collections_per_row = 5 -%}
+              {%- assign collections_per_row_xl = 5 -%}
+              {%- assign collections_per_row_l = 5 -%}
+              {%- assign collections_per_row_m = 3 -%}
+            {%- when 4 -%}
+              {%- assign collections_per_row = 4 -%}
+              {%- assign collections_per_row_xl = 4 -%}
+              {%- assign collections_per_row_l = 4 -%}
+              {%- assign collections_per_row_m = 3 -%}
+            {%- when 3 -%}
+              {%- assign collections_per_row = 3 -%}
+              {%- assign collections_per_row_xl = 3 -%}
+              {%- assign collections_per_row_l = 3 -%}
+              {%- assign collections_per_row_m = 2 -%}
+            {%- else -%}
+              {%- assign collections_per_row = 2 -%}
+              {%- assign collections_per_row_xl = 2 -%}
+              {%- assign collections_per_row_l = 2 -%}
+              {%- assign collections_per_row_m = 2 -%}
+          {%- endcase -%}
+      
+          {%- capture my_class -%}{{ my_class }} row product-category-list small-up-1 medium-up-{{ collections_per_row_m }} large-up-{{ collections_per_row_l }} xlarge-up-{{ collections_per_row_xl }} xxlarge-up-{{ collections_per_row }} columns-{{ collections_per_row }}{%- endcapture -%}
+        {%- else -%}
+          {%- capture my_class -%}{{ my_class }} product-category-carousel owl-carousel owl-theme{%- endcapture -%}
+        {%- endif -%}
+        <div class="{{ my_class }}"{% if section.settings.layout == 'slider' %} data-per-view="{{ section.settings.columns }}"{% endif %}>
+        {%- for block in section.blocks limit: section.blocks.size -%}
+          {%- assign my_collection = collections[block.settings.collection] -%}
+          {%- include 'collection-item' -%}
+        {%- endfor -%}
+        </div>
+      {%- else -%}
+        {%- include 'no-blocks' -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Collection list",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Collection list"
+      },
+      {
+        "type": "range",
+        "id": "columns",
+        "min": 2,
+        "max": 5,
+        "step": 1,
+        "label": "Collections per Row",
+        "default": 3
+      },
+      {
+        "type": "select",
+        "id": "hover",
+        "label": "Collections View on Hover",
+        "options": [
+          {
+            "value": "perspective_hover",
+            "label": "Hover Perspective"
+          },
+          {
+            "value": "zoom_hover",
+            "label": "Hover Zoom"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Layout",
+        "options": [
+          {
+            "value": "listing",
+            "label": "Listing"
+          },
+          {
+            "value": "slider",
+            "label": "Slider"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "padding",
+        "label": "Padding Left - Right"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "featured_collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection list",
+        "category": "Collection",
+        "settings": {
+          "columns": 3
+        },
+        "blocks": [
+          {
+            "type": "featured_collection"
+          },
+          {
+            "type": "featured_collection"
+          },
+          {
+            "type": "featured_collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

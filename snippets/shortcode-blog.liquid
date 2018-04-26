@@ -1,0 +1,38 @@
+{%- capture my_title -%}{% include 'shortcode-render' render: 'title' %}{%- endcapture -%}
+{%- capture my_blog_name -%}{% include 'shortcode-render' render: 'blog' %}{%- endcapture -%}
+{%- capture my_limit -%}{% include 'shortcode-render' render: 'limit' %}{%- endcapture -%}
+
+<div class="from-the-blog-wrapper">
+  {%- if my_title != blank -%}
+  <h2 class="shortcode_title">{{ my_title | escape }}</h2>
+  {%- endif -%}
+
+  {%- assign my_blog = blogs[my_blog_name] -%}
+  {%- unless my_blog.articles_count == 0 -%}
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="blog-list-wrapper">
+        {%- for my_article in my_blog.articles limit: my_limit -%}
+        <div class="blog-list-item">	
+          <a class="blog_list_img_link" href="{{ my_article.url }}">
+            <span class="blog_list_overlay"></span>
+            <span class="blog_list_img"{% if my_article.image %} style="background-image: url({{ my_article.image | img_url: '1024x' }});"{% endif %}></span>
+            <span class="blog-list-content-wrapper">
+              <span class="blog-list-content-inner">
+                {%- if my_blog.comments_enabled? -%}
+                <span class="blog-list-comment"><i class="fa fa-comment-o"><span>{{ my_article.comments_count }}</span></i></span>
+                {%- endif -%}
+                <span class="blog-list-content">
+                  <h2 class="blog-list-title">{{ my_article.title }}</h2>
+                  <span class="blog-list-date">{{ my_article.published_at | time_tag: format: 'month_day_year' }}</span>
+                </span>
+              </span>
+            </span>
+          </a>
+        </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endunless -%}
+</div>

@@ -1,0 +1,221 @@
+.closeModal{
+  float: right;
+  font-size: 25px;
+  font-weight: bold;
+  color: gray;
+  margin:10px;
+}
+
+.orderForm .quantity.field {
+border-bottom: 1px solid #cacaca;
+text-align: center;
+width: 30px;
+font-weight: bold;
+padding: 0; 
+display: inline-block;
+vertical-align: top;  
+}
+.orderForm td {
+ 
+}
+.orderForm td:first-child {
+width: 100px; 
+}
+.orderForm  input[type="submit"] {
+margin: 0 0 !important; 
+display: inline-block !important;
+vertical-align: top;  
+}
+.orderForm >div {
+text-align: right;  
+}
+.orderForm .sub td img {
+display: none;  
+}
+.orderSubmit {
+
+padding: 15px 0;
+
+text-align: right;  
+}
+.orderSubmitFloat {
+position: fixed;
+bottom:  0;
+left: 0;
+right: 0; 
+z-index: 10;
+padding: 15px 0;  
+
+}
+.orderSubmit .row,
+.orderSubmitFloat .row {
+margin: auto;
+  
+}
+.dummyOrder {
+border: solid 0px;
+height: 1px;
+padding: 0; 
+}
+.filterBoxWrap select,
+.filterBox input.form-control {
+padding: 0 10px !important; 
+border: 2px solid #cacaca !important;
+}
+.filterBoxWrap {
+display: table; 
+width: 100%;  
+}
+.filterBoxWrap .fBox {
+display: table-cell;  
+width: 50%; 
+padding: 0 10px 0 0;
+text-align: left; 
+}
+.filterBoxWrap .fBox  {
+position: relative; 
+}
+
+.filterBoxWrap .fBox.cat:after {
+  color: #00c4b3;
+  content: "";
+  font-family: "icomoon";
+  font-size: 16px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 10px;
+  text-align: center;
+  bottom: 0;
+  width: 34px;
+  z-index: 10;
+
+}
+.zeroResults {
+margin: 1em 0;  
+}
+.hideMe  {
+display: none !important; 
+}
+.filterBoxWrap > div:last-child {
+padding-right: 0;  
+}
+
+@media only screen and (max-width: 767px) {
+  .orderForm td:first-child {
+    position: absolute;
+  top: -99999px;
+  left: -99999px;
+  z-index: 1;
+  opacity: 0;
+  }
+  .filterBoxWrap > div {
+  display: block !important;  
+  width: 100% !important;  
+  padding: 0 0 0 0 !important;  
+  margin: 0 0 15px 0 !important;  
+  text-align: center !important;  
+  }
+  .filterBoxWrap > div.subs label {
+  display: none ;  
+  }
+  .orderForm table {
+  font-size: 12px;  
+  }
+  .orderForm .quantity.field {
+  font-size: 12px !important;  
+  }
+}
+
+/* update 11-21-17 */
+.prodListImg img {
+  margin: 0px;
+  object-fit: cover;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  max-width: none;
+}
+.orderForm td {
+  padding: 5px 10px;
+}
+.filterBoxWrap {
+  padding-bottom: 35px;
+}
+.prodListQty i {
+  position: relative;
+  top: 15px;
+}
+.prodListQty i:hover {
+  cursor: pointer;
+}
+.prodListQty span i {
+  font-size: 12px;
+}
+.orderSubmit {
+  text-align: center !important;
+}
+.submitCheckout {
+  background-color: #00c4b3;
+  display: inline-block;
+  padding: 15px 30px;
+  width: auto;
+  font-size: .75rem;
+  line-height: 1.125rem;
+  font-weight: 600;
+  letter-spacing: .125rem;
+  text-transform: uppercase;
+  margin-left: 15px;
+}
+.submitCheckout:hover {
+  background-color: #00deca;
+}
+@media screen and (max-width: 767px) {
+  .orderForm td:first-child {
+    position: static;
+    opacity: 1;
+  }
+  
+  .orderForm td {
+    padding: 5px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .prodListQty span {
+    display: none;
+  }
+}
+@media screen and (max-width: 414px) {
+  .submitCheckout {
+    margin: 0;
+    padding: 10px;
+  }
+  
+}
+.popUpModal{
+  height: 100%; 
+  width: 100%; 
+  display:none;
+  position: fixed; 
+  top: 100px; 
+  right: 300;
+  z-index: 999;
+ }
+.modal-header{
+  background-color: #00c4b3;
+}
+.btn.btn-default{
+  background-color: #00c4b3;
+    display: inline-block;
+    padding: 15px 30px;
+    width: auto;
+    font-size: .75rem;
+    line-height: 1.125rem;
+    font-weight: 600;
+    letter-spacing: .125rem;
+    text-transform: uppercase;
+    margin-left: 15px;
+}  
+     

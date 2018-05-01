@@ -154,7 +154,7 @@ layout/checkout.liquid:
 layout/theme-easylockdown-bckp.liquid:
   development: 2018-04-16T08:39:50-07:00   5d9ffb2bd6480075c7d6ee93c3295e20
 layout/theme.liquid:
-  development: 2018-05-01T07:51:21-07:00   6a970eead363448a52197cb5e3ab6c99
+  development: 2018-05-01T09:43:04-07:00   7d10b7826ac0e7d824d03523596df95f
 locales/en.default.json:
   development: 2018-04-16T08:39:50-07:00   9839b788157a8add886760d3986ec3bd
 sections/article-template.liquid:
@@ -206,9 +206,9 @@ sections/page-faqs-template.liquid:
 sections/product-accessories.liquid:
   development: 2018-04-16T08:39:36-07:00   2dcc6010fba6b80f62471c5ab75ef381
 sections/product-quickview-template.liquid:
-  development: 2018-05-01T07:51:44-07:00   db3afa1b7f778907d2a31e871de6824c
+  development: 2018-05-01T13:24:18-07:00   aedb274c1cda663a494259fc51dd6b27
 sections/product-template.liquid:
-  development: 2018-05-01T08:11:50-07:00   09d45eb1ce33722b3016dd17e4d99ba0
+  development: 2018-05-01T13:32:46-07:00   d6d3888b65367fc972551812d5f7f9d0
 sections/product-variants-mobile.liquid:
   development: 2018-04-16T08:39:37-07:00   5f42f755d3cf08155abacbb2d72d4fb5
 sections/ra-revslider.liquid:

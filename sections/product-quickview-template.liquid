@@ -85,6 +85,7 @@
             <label{% if option.name == 'default' %} class="hide"{% endif %} for="single-option-selector-{{ forloop.index0 }}">
               {{- option.name -}}
             </label>
+
             <div class="single-option-selector variation-select-{{ section.id }}-{{ forloop.index0 }}">
               <select id="single-option-selector-{{ section.id }}-{{ forloop.index0 }}" class="single-option-selector-{{ section.id }}" data-index="option{{ forloop.index }}">
                 {%- for value in option.values -%}
@@ -102,7 +103,7 @@
           <select name="id" id="ProductSelect-{{ section.id }}" data-section="{{ section.id }}" class="variation-select no-js">
             {%- for variant in product.variants -%}
             {%- if variant.available -%}
-            <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+            <option data-id= {{variant.id}} data-url= {{variant.url}} {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
               {{- variant.title -}}
             </option>
             {% else %}
@@ -143,10 +144,6 @@
             <div class="quantity">
               <input type="number" step="1" min="1" max="20" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric" />
             </div>
-            {%- for variant in product.variants -%}
-          	 <input class="url" value={{variant.url}} type=hidden />
-      		 <input class="id" value={{variant.id}} type=hidden />
-          	{% endfor %}
             <button id="AddToCart-{{ section.id }}" type="submit" class="add_to_cart_button button btn1 bshadow alt{% unless current_variant.available %} hide{% endunless %}" {% unless current_variant.available %}disabled="disabled"{% endunless %}>
               <span id="AddToCartText-{{ section.id }}">
                 {%- unless current_variant.available -%}
@@ -177,8 +174,8 @@
     console.log('cart value '+$cartItemsVal);
     e.preventDefault();
     var check = true;
-    var $url = $(this).parent().find('.url').val();
-    var $id = $(this).parent().find('.id').val();
+    var $url = $( ".variation-select.no-js option:selected" ).data('url');
+    var $id = $( ".variation-select.no-js option:selected" ).data('id');
     var $qty = 0;
     var inputQty = parseInt($('.input-text.qty.text').val());    
     $.ajax({

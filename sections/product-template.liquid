@@ -132,15 +132,13 @@
                           <div class="product-rating">
 
                             <a href="#tab-reviews" onclick = "jQuery('.reviews_tab a').trigger('click'); var scrollContainer = jQuery('html, body'); var curElem = jQuery('.reviews_tab'); scrollContainer.animate({scrollTop : curElem.offset().top - 1}, 500);event.stopPropagation();">
-<span class="stamped-product-reviews-badge stamped-main-badge" data-id="{{ product.id }}" data-product-sku="{{product.handle}}" style="display: inline-block;">{{ product.metafields.stamped.badge }}</span> 
+							<span class="stamped-product-reviews-badge stamped-main-badge" data-id="{{ product.id }}" data-product-sku="{{product.handle}}" style="display: inline-block;">{{ product.metafields.stamped.badge }}</span> 
                             </a>
        
                           </div>
                           <h1 itemprop="name" class="product_title entry-title">{{ product.title | escape }}</h1>
                         </div>
                         <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                          <input class="url" value={{current_variant.url}} type=hidden />
-      					  <input class="id" value={{current_variant.id}} type=hidden />
                           {% include 'wholesaleProductDiscount' %}
 
                           {%- if product.price_varies -%}
@@ -202,7 +200,7 @@
                           <select name="id" id="ProductSelect-{{ section.id }}" data-section="{{ section.id }}" class="variation-select hide">
                             {%- for variant in product.variants -%}
                             {%- if variant.available -%}
-                            <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+                            <option data-id= {{variant.id}} data-url= {{variant.url}} {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
                               {{- variant.title -}}
                             </option>
                             {% else %}
@@ -220,7 +218,7 @@
                           </div>
                           {%- endif -%}
 
-                          <div class="variation-availability">
+                          <div class="variation-availability">                            
                             {%- if current_variant -%}
                               {%- if current_variant.available -%}
                                 {%- if current_variant.inventory_management == "shopify" and current_variant.inventory_policy != "continue" -%}
@@ -496,8 +494,11 @@ data-product-sku="{{product.handle}}">
   	var $cartItemsVal = parseInt($cartItems.text());
     e.preventDefault();
     var check = true;
-    var $url = $('.url').val();
-    var $id = $('.id').val();
+    var $urlWithParams = window.location.href;
+    
+      var $id = $( ".variation-select.hide option:selected" ).data('id');
+      var $url = $( ".variation-select.hide option:selected" ).data('url');
+    console.log("url url", $url);
     var $qty = 0;
     var inputQty = parseInt($('.input-text.qty.text').val());
     $.ajax({

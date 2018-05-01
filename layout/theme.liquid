@@ -77,7 +77,6 @@
 
 {%- assign form_style = settings.form_style | default: 'default' -%}
 <body class="template-{{ template | split: '.' | first }}" data-form-style="{{ form_style }}">
-
   {% include 'redirect-bar' %}
   
   {%- if settings.page_loader == '1' -%}
@@ -127,49 +126,82 @@
         $(this).addClass('offcanvas_close');
       });
       $('.input-text.qty.text').change(function(){
-       
-        var qty = parseInt($(this).parent().find('.input-text.qty.text').val());
+        
+        var $qty = $(this).parent().find('.input-text.qty.text').val();
         var $id = $(this).parent().find('.input-text.qty.text').data('id');
+        var $url = $(this).parent().find('.input-text.qty.text').data('url');
         var answer = true;
-        if(qty == 0) {
+        var check = true;
+        if(parseInt($qty) == 0) {
       	var answer = confirm("Are you sure you want to delete the  product?")
-        }
-        if (answer) {
-          console.log("this hit");
-          var data = {
-          quantity: qty,
-          id: $id
-          }
-
-          jQuery.ajax({
-            type: 'post',
-            url: '/cart/change.js',
-            data: data,
-            success: function(d){console.log(d); location.reload();},
-            dataType: 'json'
+        }       
+        $.ajax({
+        type: 'GET',
+        url: `${$url}`,
+        cache: false,
+        dataType: 'json',
+        success: function(cart) {
+          var tags = cart.product.tags.split(','); 
+          tags.forEach(tag => {
+            if (tag.trim() == 'black' && parseInt($qty) > 10) {
+               alert("You can choose only 10 items from this product");
+				var quantity = 10;
+                check = false;
+              addToCart(quantity);
+            } else if (tag.trim() == 'limit2' && parseInt($qty) > 15) {
+             	alert("You can choose only 15 items from this product");
+				var quantity = 15;
+              	addToCart(quantity);
+                check = false;
+            } else if (tag.trim() == 'limit3' && parseInt($qty) > 20) {
+                alert("You can choose only 20 items from this product");
+				var quantity = 20; 
+              	addToCart(quantity);
+                check = false;
+            }
           });
-
-        } else {
-          location.reload();
+          if(check) {
+    	  	addToCart($qty);
+          }
+        
         }
-      });
+    });
+     function  addToCart(quantity) {  
+      if (answer) {
+              console.log("this hit");
+              var data = {
+              quantity: quantity,
+              id: $id
+              }
+
+              jQuery.ajax({
+                type: 'post',
+                url: '/cart/change.js',
+                data: data,
+                success: function(d){console.log(d); location.reload();},
+                dataType: 'json'
+              });
+
+            } else {
+              location.reload();
+            }
+     }
+     });
       
       $('.prodPlus').on('click',function(){
         var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
- 
-          var $qty = $(this).parent().find('.input-text.qty.text');
-          var currentVal = parseInt($qty.val());
-		if (!isNaN(currentVal) && currentVal > 0) {
-              $qty.val(currentVal + 1).trigger('change');
-          }          
- 
+        var $qty = $(this).parent().find('.input-text.qty.text');
+        var currentVal = parseInt($qty.val());
+		    if (!isNaN(currentVal) && currentVal > 0) {
+          $qty.val(currentVal + 1).trigger('change');
+        }          
       });
       $('.prodMinus').on('click',function(){
-          var $qty = $(this).parent().find('.input-text.qty.text');
-          var currentVal = parseInt($qty.val());
-          if (!isNaN(currentVal) && currentVal > 0) {
-              $qty.val(currentVal - 1).trigger('change');
-          }
+        var $qty = $(this).parent().find('.input-text.qty.text');
+        var currentVal = parseInt($qty.val());
+        if (!isNaN(currentVal) && currentVal > 0) {
+            $qty.val(currentVal - 1).trigger('change');
+        }
       });
       
       $('.myaccount-content').find('.shop_table').find('tbody').find('tr').each(function (keyElement, rowElement) {
@@ -183,6 +215,8 @@
       })
 
     })
+   
+
   </script>
 
   <script>

@@ -13,7 +13,6 @@
     	<br>
           <!-- End code block -->
     {% endif %}
-            
             {%- if cart.item_count > 0 -%}
             <form action="/cart" method="post" class="shopping-cart">
               <div class="cart-form">
@@ -88,7 +87,7 @@
                                  <!-- Custom Code -->
                        <div class="quantity cartQty">
                           <span class="prodMinus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                            <input id="updates_{{ item.key }}" onfocus="this.select()" data-id="{{item.variant_id}}" type="number" step="1" min="0" name="updates[]" value="{{ item.quantity }}" title="{{ 'cart.label.quantity' | t }}" class="input-text qty text" size="4" pattern="[0-9]*" />
+                            <input id="updates_{{ item.key }}" onfocus="this.select()" data-id="{{item.variant_id}}" data-url="{{item.url}}" type="number" step="1" min="0" name="updates[]" value="{{ item.quantity }}" title="{{ 'cart.label.quantity' | t }}" class="input-text qty text" size="4" pattern="[0-9]*" />
                           <span class="prodPlus"><i class="fa fa-plus" aria-hidden="true"></i></span>
                             <!-- End Custom Code -->
                         </div>
@@ -110,7 +109,7 @@
                           </div>
                         </div>
                         {%- endif -%}
-                        <input type="submit" name="update" class="button btn2" value="{{ 'cart.general.update' | t }}" />
+                        {% comment %}<input type="submit" name="update" class="button btn2" value="{{ 'cart.general.update' | t }}" />{% endcomment %}
 						<!-- Custom Code -->
                         <a href="/cart/clear" class="button btn2" style="float:right;">Clear Cart</a>                        
                         <!-- Custom Code-->

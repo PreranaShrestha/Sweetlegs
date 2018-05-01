@@ -95,7 +95,10 @@
           </div>
           {%- endfor -%}
           {%- endunless -%}
-
+		  {%- for variant in product.variants -%}
+          	 <input class="url" value={{variant.url}} type=hidden />
+      		 <input class="id" value={{variant.id}} type=hidden />
+          {% endfor %}
           <select name="id" id="ProductSelect-{{ section.id }}" data-section="{{ section.id }}" class="variation-select no-js">
             {%- for variant in product.variants -%}
             {%- if variant.available -%}
@@ -136,11 +139,14 @@
             <p class="stock stock-{{ section.id }} out-of-stock">{{ 'products.product.unavailable' | t | escape }}</p>
             {%- endif -%}
           </div>
-
           <div class="variations_button">
             <div class="quantity">
               <input type="number" step="1" min="1" max="20" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric" />
             </div>
+            {%- for variant in product.variants -%}
+          	 <input class="url" value={{variant.url}} type=hidden />
+      		 <input class="id" value={{variant.id}} type=hidden />
+          	{% endfor %}
             <button id="AddToCart-{{ section.id }}" type="submit" class="add_to_cart_button button btn1 bshadow alt{% unless current_variant.available %} hide{% endunless %}" {% unless current_variant.available %}disabled="disabled"{% endunless %}>
               <span id="AddToCartText-{{ section.id }}">
                 {%- unless current_variant.available -%}
@@ -164,6 +170,83 @@
   </div>
 </div>
 {%- unless product == empty -%}
+<script>
+  $('#AddToCart-product-quickview-template').click(function(e) {
+    var $cartItems = $('.cart_items_number.counter_number.animated.rubberBand');
+  	var $cartItemsVal = parseInt($cartItems.text());
+    console.log('cart value '+$cartItemsVal);
+    e.preventDefault();
+    var check = true;
+    var $url = $(this).parent().find('.url').val();
+    var $id = $(this).parent().find('.id').val();
+    var $qty = 0;
+    var inputQty = parseInt($('.input-text.qty.text').val());    
+    $.ajax({
+      type: 'GET',
+      url:'/cart.js',
+      dataType: 'json',
+      success: function(cart){
+        $qty = cart.items.filter(item => item.variant_id == $id)[0].quantity;
+      }
+    });
+    $.ajax({
+        type: 'GET',
+        url: `${$url}`,
+        cache: false,
+        dataType: 'json',
+        success: function(cart) {
+          var tags = cart.product.tags.split(','); 
+          tags.forEach(tag => {
+            if (tag.trim() == 'black' && parseInt($qty) + inputQty > 10) {
+              alert("You can choose only 10 items from this product");
+				var quantity = 10;
+              	check = false;
+                addToCart(quantity);
+              	$cartItems.text($cartItemsVal - parseInt($qty) + 10);
+            } else if (tag.trim() == 'limit2' && parseInt($qty) + inputQty > 15) {
+             	alert("You can choose only 15 items from this product");
+				var quantity = 15;
+              	check = false;
+              	addToCart(quantity);
+              	$cartItems.text($cartItemsVal - parseInt($qty) + 20);
+            } else if (tag.trim() == 'limit3' && parseInt($qty) + inputQty > 20) {
+              alert("You can choose only 20 items from this product");
+				var quantity = 20;
+              	check = false;
+              	addToCart(quantity);
+              	$cartItems.text($cartItemsVal - parseInt($qty) + 30);
+            }
+          });
+          if(check) {
+            $cartItems.text($cartItemsVal +inputQty);
+    		addToCart(parseInt($qty) + inputQty);
+          }
+        }
+    });
+ function addToCart(qty) {  
+   console.log('qty' + qty);
+   var data = {
+    	quantity: qty,
+    	id: $id
+    }
+    $.ajax({
+        type: "POST",
+        url: '/cart/change.js',
+        data: data,
+        success: function(cart){
+          console.log('response from cart after post');
+          console.log(cart);
+          if(cart.items.length >= 5) {
+            $('.popUpModal').fadeIn();
+        	
+          }
+          
+          },
+          dataType: 'json'
+        });   
+ }
+  });
+</script>
   <script type="application/json" id="ProductJson-{{ section.id }}">
     {{- product | json -}}
   </script>

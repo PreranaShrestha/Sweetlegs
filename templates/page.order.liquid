@@ -9,7 +9,7 @@
             {%- include 'shortcode' load: page.content -%}
           </div>  
     </div>
-      </div>       
+   </div>       
 {% assign collHandle = 'quick-order' %}             
 {% assign collection = collections[collHandle] %}   
 {% assign count = 0 %}
@@ -25,8 +25,6 @@ Source: https://gist.github.com/carolineschnapp/9122054
   {% include 'alertMessageLineItem' %}
 <div class="paginationForm">
 {% paginate collection.products by total %}
-  
-
 <form action="/cart" method="post" class="orderForm">
   <div class="row">
     <div class="large-12 columns" style="text-align: left">
@@ -115,14 +113,16 @@ Source: https://gist.github.com/carolineschnapp/9122054
   
     </div><!-- row -->
     </div><!-- large-12 columns -->
+  
     <div class="orderSubmit realOrderSubmit  orderSubmitFloat">
       <div class="row">
         <div class="large-12 columns">  
-          <input type="submit" value="Add to the cart" />
-          <a class="submitCheckout" href="/checkout">Checkout</a>
+          <input type="submit" value="Continue to Checkout" />
+          {% comment %}<a class="submitCheckout" href="/checkout">Checkout</a> {% endcomment %}
         </div>
       </div>
     </div>
+ 
   
   {% else %}
     <p>There are no products in this view.</p>
@@ -188,19 +188,19 @@ $(document).ready(function() {
   
   $('.quantity.field').keydown(function(e) {
           // Allow: backspace, delete, tab, escape, enter and .
-          if ($.inArray(e.keyCode, [46, 8, 9, 27, 110, 190]) !== -1 ||
-            // Allow: Ctrl+A
-            (e.keyCode == 65 && e.ctrlKey === true) ||
-            // Allow: home, end, left, right
-            (e.keyCode >= 35 && e.keyCode <= 39)) {
-            // let it happen, don't do anything
-            return;
-          }
-          // Ensure that it is a number and stop the keypress
-          if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-            e.preventDefault();
-          }
-        });
+    if ($.inArray(e.keyCode, [46, 8, 9, 27, 110, 190]) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode == 65 && e.ctrlKey === true) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)) {
+      // let it happen, don't do anything
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
+    }
+  });
   
   
   $('.orderForm').submit(function() {
@@ -293,9 +293,7 @@ $(document).ready(function() {
       
       floatMe();
       
-    }, 10);
-    
-    
+    }, 10);        
   });
 
     $('.clearMe').click(function() {
@@ -392,9 +390,11 @@ $(document).ready(function(){
 
 
  $('.quantity.field').change(function(){ 
+   var check = true;
     var prev = this.defaultValue;
     var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
     var $id = $(this).parent().find('input.variantId').val();
+   	var $url = $(this).parent().find('input.variantUrl').val();
     var $qty = $(this).parent().find('.quantity.field');
     var initialLineItemValue = parseInt($qty.data('info'));
     var totalLine = parseInt($('.totalLineItem').data('total')); 
@@ -405,22 +405,16 @@ $(document).ready(function(){
    if(prev == 0 && initialLineItemValue == 0 && parseInt($qty.val()) != 0 ) {
     $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) + 1);
    }
- 
-  
-   
-   if(totalLine >= 5) {
+   if(totalLine > 5 ) {
       $qty.val('0');
      $('.popUpModal').fadeIn();
      $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) - 1);
     
    }
-   console.log(prev+'total'+totalLine);
-   
-   
-      var currentVal = parseInt($qty.val());
-      if (!isNaN(currentVal)) {
-          $qty.val(currentVal);
-      }
+    var currentVal = parseInt($qty.val());
+    if (!isNaN(currentVal)) {
+        $qty.val(currentVal);
+    }
     console.log('current value' + currentVal + 'cart value' + initialCartValue + 'prev' + prev);
     if (prev != 0 && initialLineItemValue == 0 ){
     var updateValue = initialCartValue + (currentVal - prev);
@@ -430,12 +424,50 @@ $(document).ready(function(){
     $qty.data('info', currentVal);
     
     $('.cart_items_number.counter_number.animated.rubberBand').text(updateValue);
-    if(prev != 0 || initialLineItemValue != 0) {
-      console.log("hit this line");
+
+    $.ajax({
+        type: 'GET',
+        url: `${$url}`,
+        cache: false,
+        dataType: 'json',
+        success: function(cart) {
+          var tags = cart.product.tags.split(','); 
+          tags.forEach(tag => {
+            console.log(currentVal);
+            if (tag.trim() == "black" && currentVal > 10) {
+              alert("You can choose only 10 items from this product");
+              $qty.val(10).trigger('change');
+			  var quantity = 10;
+              check = false;
+              addToCart(quantity);
+            } else if (tag.trim() == 'limit2' && currentVal > 15) {
+             	alert("You can choose only 15 items from this product");
+                $qty.val(15).trigger('change');
+              	check = false;
+				var quantity = 15;
+              	addToCart(quantity);
+            } else if (tag.trim() == 'limit3' && currentVal > 20) {
+              alert("You can choose only 20 items from this product");
+              $qty.val(20).trigger('change');
+				var quantity = 20;
+              	check = false;
+              	addToCart(quantity);
+            } 
+          });
+          if(check) {
+              addToCart(currentVal);
+          }
+        
+        }
+    });
+   
+   function addToCart(qty) {
+     console.log('qty'+qty);
       var data = {
-    	quantity: currentVal,
+    	quantity: qty,
     	id: $id
     }
+    if(prev != 0 || initialLineItemValue != 0) {    
       jQuery.ajax({
       type: 'post',
       url: '/cart/change.js',
@@ -444,11 +476,6 @@ $(document).ready(function(){
       dataType: 'json'
     });
     } else {
-      var data = {
-    	quantity: currentVal,
-    	id: $id
-    }
-
     jQuery.ajax({
       type: 'post',
       url: '/cart/add.js',
@@ -457,23 +484,20 @@ $(document).ready(function(){
       dataType: 'json'
     });
     }
+   }
   });
    $('.prodListPlus').on('click',function(){
-   var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
+      var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
       var $qty = $(this).parent().find('.quantity.field');
       var currentVal = parseInt($qty.val());
-    
       if (!isNaN(currentVal)) {
           $qty.val(currentVal + 1).trigger('change');
       }
     $('.cart_items_number.counter_number.animated.rubberBand').text(initialCartValue + 1);
-    
   });
   $('.prodListMinus').on('click',function(){
-    
      var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
      var $id = $(this).parent().find('input.variantId').val();
-   	console.log('id'+ $id);
       var $qty = $(this).parent().find('.quantity.field');
       var currentVal = parseInt($qty.val());
       if (currentVal > 0 ) {

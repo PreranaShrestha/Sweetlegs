@@ -1,7 +1,10 @@
 {%- assign product_limit = section.settings.shop_products_row | times: section.settings.shop_rows_page -%}
 {{ 'alertMessageLineItem.js' | asset_url | script_tag }}  
 {%- paginate collection.products by product_limit -%}
-{% include 'alertMessageLineItem' %}
+{% if customer.tags contains "distributor" or customer.tags contains "Distributor" %}
+  	{% include 'alertMessageLineItem' %}
+{% endif %}
+{{ 'addToCart.js' | asset_url | script_tag }} 
 <div data-section-id="{{ section.id }}" data-section-type="collection-template">
   <div id="primary" class="content-area shop-page{% if section.settings.shop_sidebar == '1' %} shop-has-sidebar{% endif %}">
     <div class="tp-loader spinner5"><div class="dot1"></div><div class="dot2"></div><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>

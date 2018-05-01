@@ -27,7 +27,7 @@
                       
                       <td class="prodListQty" style="text-align:center;">
 						<input class='variantId' type='hidden'  name="quantity" value="{{variant.id}}" />
-
+						<input class='variantUrl' type='hidden'  name="quantity" value="{{variant.url}}" />
                        <i class="fa fa-minus prodListMinus" aria-hidden="true"></i>
                           {% if variant.available %}
                             {% assign vID = variant.id %}
@@ -94,6 +94,7 @@
                                      {% endif %}
                                   {% endfor %}
                                   <input data-info=0  data-name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" max="{{ variant.inventory_quantity }}" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ xQTY }}" tabindex="1" />
+                        		  <input class='variantUrl' type='hidden'  name="quantity" value="{{variant.url}}" />
 
                           {% else %}
                             <small>Out of Stock</small>

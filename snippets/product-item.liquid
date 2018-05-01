@@ -4,8 +4,7 @@
 {% assign totalLineItem = 0 %}
 {% for item in cart.items %}
      {% assign totalLineItem = totalLineItem | plus: 1 %}      
-  {% endfor %} 
-
+  {% endfor %}
 <div class="product column{% if settings.catalog_mode != '' %} catalog_mode{% endif %}{% if settings.shop_addtocart != '' %} display_buttons{% endif %} aspect-ratio-{{ settings.image_layout }}">
   {%- if settings.shop_quick_view != '' -%}
   <a href="#" class="button eva_product_quick_view_button background--light" data-product_id="{{ my_product.handle }}">{{'collections.general.quick_view' | t }}</a>
@@ -102,7 +101,9 @@
         {%- include 'wishlist' with true -%}
       </div>
     </div>
-    <div class="clear"></div>
+    <div class="clear">
+    </div>
+    
     <h3><a class="shop_product_title" href="{{ my_product.url | within: collection }}">{{ my_product.title | escape }}{% if current_variant.sku != '' %}<span class="woos_sku">{{ current_variant.sku }}</span>{% endif %}</a></h3>
     {%- include 'product-color-swatch' -%}
     <div class="product_after_shop_loop">
@@ -169,6 +170,10 @@
             {%- else -%}
             <form action="/cart/add" method="post" enctype="multipart/form-data">
               <input type="hidden" name="quantity" value="1" />
+               {%- for variant in my_product.variants -%}
+              	<input class="url" value={{variant.url}} type=hidden />
+     			<input class="id" value={{variant.id}} type=hidden />
+              {%- endfor -%}
               <select class="hide" name="id">
                 {%- for variant in my_product.variants -%}
                 <option value="{{ variant.id }}">{{ variant.title | escape}} - {{variant.price | money }}</option>
@@ -193,4 +198,3 @@
     </div>
   </div>
 </div>
-

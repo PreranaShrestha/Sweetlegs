@@ -17,11 +17,14 @@
 {%- assign pwrapper_item_class = 'photoswipe-item' -%}
 {%- assign modal_class = 'zoom_enabled' -%}
 {%- endif -%}
-
+{% if customer.tags contains "distributor" or customer.tags contains "Distributor" %}
+	{% include 'alertMessageLineItem' %}
+{% endif %}
 <div id="ProductSection-{{ section.id }}" class="product-section {{ product_design }}" data-section-id="{{ section.id }}" data-section-type="product-template" data-enable-history-state="true" data-product_swatch_color="{{ settings.product_swatch_color }}" data-product_swatch_size="{{ settings.product_swatch_size }}">
   <div id="primary" class="content-area">
     <div id="content" class="site-content">
       <div class="page-header"></div>
+      
       <div itemscope itemtype="http://schema.org/Product" id="product-{{ product.id }}" class="product">
         <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
         <meta itemprop="image" content="{{ product.featured_image.src | img_url: '650x' }}" />
@@ -136,7 +139,8 @@
                           <h1 itemprop="name" class="product_title entry-title">{{ product.title | escape }}</h1>
                         </div>
                         <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-      <p>current variant {{ current_variant.id }}</p>
+                          <input class="url" value={{current_variant.url}} type=hidden />
+      					  <input class="id" value={{current_variant.id}} type=hidden />
                           {% include 'wholesaleProductDiscount' %}
 
                           {%- if product.price_varies -%}
@@ -244,7 +248,6 @@
                             </div>
                             <button id="AddToCart-{{ section.id }}" type="submit" class="add_to_cart_button button btn1 bshadow alt{% unless current_variant.available %} hide{% endunless %}" {% unless current_variant.available %}disabled="disabled"{% endunless %}>
                               <span id="AddToCartText-{{ section.id }}">
-                                <p>Product number is {{ product.id }}</p>
                                 {%- unless current_variant.available -%}
                                   {{- 'products.product.sold_out' | t -}}
                                 {%- else -%}
@@ -315,7 +318,7 @@
 
             
                 {%- for my_tag in product.tags -%}
-                	{% if my_tag != 'c1' and my_tag != 'c2' and my_tag != 'c3' and my_tag != 'c4' %}
+                	{% if my_tag != 'c1' and my_tag != 'c2' and my_tag != 'c3' and my_tag != 'c4' and my_tag != 'limit1' and my_tag != 'limit2' and my_tag != 'limit3' %}
                 		{{- my_tag | link_to_tag: my_tag -}}
                 	{% endif %}
                 {%- endfor -%}
@@ -482,9 +485,91 @@ data-product-sku="{{product.handle}}">
 {%- unless product == empty -%}
   <script type="application/json" id="ProductJson-{{ section.id }}">
     {{- product | json -}}
+      
   </script>
+<script>
+  $('.closeModal').on('click',function(){
+    $('.popUpModal').fadeOut();
+  });
+  $('#AddToCart-product-template').click(function(e) { 
+    var $cartItems = $('.cart_items_number.counter_number.animated.rubberBand');
+  	var $cartItemsVal = parseInt($cartItems.text());
+    e.preventDefault();
+    var check = true;
+    var $url = $('.url').val();
+    var $id = $('.id').val();
+    var $qty = 0;
+    var inputQty = parseInt($('.input-text.qty.text').val());
+    $.ajax({
+      type: 'GET',
+      url:'/cart.js',
+      dataType: 'json',
+      success: function(cart){
+        $qty = cart.items.filter(item => item.variant_id == $id)[0].quantity;
+      }
+    });
+    $.ajax({
+        type: 'GET',
+        url: `${$url}`,
+        cache: false,
+        dataType: 'json',
+        success: function(cart) {
+          var tags = cart.product.tags.split(','); 
+          tags.forEach(tag => {
+            if (tag.trim() == 'black' && parseInt($qty) + inputQty > 10) {
+              alert("You can choose only 10 items from this product");
+				var quantity = 10;
+              	check = false;
+              	$cartItems.text($cartItemsVal - parseInt($qty) + 10);
+                addToCart(quantity);
+                $('.input-text.qty.text').val(10);
+            } else if (tag.trim() == 'limit2' && parseInt($qty) + inputQty > 15) {
+             	alert("You can choose only 15 items from this product");
+				var quantity = 15;
+              	check = false;
+              	addToCart(quantity);
+                $('.input-text.qty.text').val(20);
+              	$cartItems.text($cartItemsVal - parseInt($qty) + 20);
+            } else if (tag.trim() == 'limit3' && parseInt($qty) + inputQty > 20) {
+              alert("You can choose only 20 items from this product");
+				var quantity = 20;
+              	check = false;
+              	addToCart(quantity);
+              	$cartItems.text($cartItemsVal - parseInt($qty) + 30);
+                $('.input-text.qty.text').val(30);
+            }
+          });
+          if(check) {
+            $cartItems.text($cartItemsVal +inputQty);
+    		addToCart(parseInt($qty) + inputQty);
+            
+          }
+        }
+    });
+ function addToCart(qty) {
+   
+   console.log('qty' + qty);
+   var data = {
+    	quantity: qty,
+    	id: $id
+    }
+    $.ajax({
+        type: "POST",
+        url: '/cart/change.js',
+        data: data,
+        success: function(cart){
+          console.log('response from cart after post');
+          console.log(cart);
+          if(cart.items.length >= 5) {
+            $('.popUpModal').fadeIn();      	
+          }           
+          },
+          dataType: 'json'
+        });   
+ }
+   })
+</script>
 {%- endunless -%}
-
 
 {% schema %}
   {

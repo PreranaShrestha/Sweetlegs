@@ -179,13 +179,13 @@
                         {%- if product.available -%}
                         <form action="/cart/add" method="post" enctype="multipart/form-data" class="variations_form cart">
                           {%- unless product.options.size == 1 and product.variants[0].title == 'Default Title' -%}
-                          <div class="selector-container">
+                          <div class="selector-container ">
                             {%- for option in product.options_with_values -%}
                             <div class="selector-wrapper js">
                               <label{% if option.name == 'default' %} class="hide"{% endif %} for="single-option-selector-{{ forloop.index0 }}">
                                 {{- option.name -}}
                               </label>
-                              <div class="single-option-selector variation-select-{{ section.id }}-{{ forloop.index0 }}">
+                              <div class="single-option-selector variation-select-{{ section.id }}-{{ forloop.index0 }} filter-tag filter-dropdown">
                                 <select id="single-option-selector-{{ section.id }}-{{ forloop.index0 }}" class="single-option-selector-{{ section.id }}" data-index="option{{ forloop.index }}">
                                   {%- for value in option.values -%}
                                   <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
@@ -496,8 +496,8 @@ data-product-sku="{{product.handle}}">
     var check = true;
     var $urlWithParams = window.location.href;
     
-      var $id = $( ".variation-select.hide option:selected" ).data('id');
-      var $url = $( ".variation-select.hide option:selected" ).data('url');
+    var $id = $( ".variation-select.hide option:selected" ).data('id');
+    var $url = $( ".variation-select.hide option:selected" ).data('url');
     console.log("url url", $url);
     var $qty = 0;
     var inputQty = parseInt($('.input-text.qty.text').val());
@@ -518,21 +518,30 @@ data-product-sku="{{product.handle}}">
           var tags = cart.product.tags.split(','); 
           tags.forEach(tag => {
             if (tag.trim() == 'black' && parseInt($qty) + inputQty > 10) {
-              alert("You can choose only 10 items from this product");
+                $('.goCart').addClass('hideMe');
+          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                $(".modal-body").text("You can choose only 10 items from this product");      
+                $('.popUpModal').fadeIn();
 				var quantity = 10;
               	check = false;
               	$cartItems.text($cartItemsVal - parseInt($qty) + 10);
                 addToCart(quantity);
                 $('.input-text.qty.text').val(10);
             } else if (tag.trim() == 'limit2' && parseInt($qty) + inputQty > 15) {
-             	alert("You can choose only 15 items from this product");
+             	$('.goCart').addClass('hideMe');
+          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                $(".modal-body").text("You can choose only 10 items from this product");      
+                $('.popUpModal').fadeIn();
 				var quantity = 15;
               	check = false;
               	addToCart(quantity);
                 $('.input-text.qty.text').val(20);
               	$cartItems.text($cartItemsVal - parseInt($qty) + 20);
             } else if (tag.trim() == 'limit3' && parseInt($qty) + inputQty > 20) {
-              alert("You can choose only 20 items from this product");
+                $('.goCart').addClass('hideMe');
+          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                $(".modal-body").text("You can choose only 10 items from this product");      
+                $('.popUpModal').fadeIn();
 				var quantity = 20;
               	check = false;
               	addToCart(quantity);
@@ -561,8 +570,11 @@ data-product-sku="{{product.handle}}">
         success: function(cart){
           console.log('response from cart after post');
           console.log(cart);
-          if(cart.items.length >= 5) {
-            $('.popUpModal').fadeIn();      	
+          if(cart.items.length > 125) {
+             $(".modal-body").text("You have hit the maximum line items allowed in your cart, please checkout to avoid any issues."); 
+             $('.goCart').removeClass('hideMe');
+             $('.btn.btn-default.closeModal').addClass('hideMe');
+             $('.popUpModal').fadeIn();      	
           }           
           },
           dataType: 'json'

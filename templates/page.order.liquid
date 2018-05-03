@@ -114,8 +114,8 @@ Source: https://gist.github.com/carolineschnapp/9122054
     </div><!-- row -->
     </div><!-- large-12 columns -->
   
-    <div class="orderSubmit realOrderSubmit  orderSubmitFloat">
-      <div class="row">
+    <div class="orderSubmit realOrderSubmit  orderSubmitFloat" style="bottom: 10px" >
+      <div class="row" >
         <div class="large-12 columns">  
           <input type="submit" value="Continue to Checkout" />
           {% comment %}<a class="submitCheckout" href="/checkout">Checkout</a> {% endcomment %}
@@ -273,7 +273,7 @@ $(document).ready(function() {
         If you do, be sure to add code to account for that.
 
         */
-        console.log(d.attributes.tag);
+        //console.log(d.attributes.tag);
         location.href = `${url}?searchCatagory=${cv}`;
       },
       dataType: 'json'
@@ -346,7 +346,9 @@ function floatMe() {
 
 $(document).ready(function(){
   $('.closeModal').on('click',function(){
-    $('.popUpModal').fadeOut();
+    $('.popUpModal').fadeOut(10,function(){
+                $('.popUpModal').modal('hide');
+             });
   });
  var url = window.location.href;
   if(url.split('=')[1] != undefined) {
@@ -405,11 +407,13 @@ $(document).ready(function(){
    if(prev == 0 && initialLineItemValue == 0 && parseInt($qty.val()) != 0 ) {
     $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) + 1);
    }
-   if(totalLine > 5 ) {
-      $qty.val('0');
+   if (totalLine > 3 ) {
+     $qty.val('0');
+     $(".modal-body").text("You have hit the maximum line items allowed in your cart, please checkout to avoid any issues."); 
+     $('.goCart').removeClass('hideMe');
+     $('.btn.btn-default.closeModal').addClass('hideMe');
      $('.popUpModal').fadeIn();
-     $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) - 1);
-    
+     $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) - 1);    
    }
     var currentVal = parseInt($qty.val());
     if (!isNaN(currentVal)) {
@@ -421,33 +425,40 @@ $(document).ready(function(){
     } else {
       var updateValue = initialCartValue + (currentVal - initialLineItemValue);
     }
-    $qty.data('info', currentVal);
-    
+    $qty.data('info', currentVal);   
     $('.cart_items_number.counter_number.animated.rubberBand').text(updateValue);
-
     $.ajax({
         type: 'GET',
         url: `${$url}`,
         cache: false,
         dataType: 'json',
         success: function(cart) {
-          var tags = cart.product.tags.split(','); 
+          var tags = cart.product.tags.split(',');          
           tags.forEach(tag => {
             console.log(currentVal);
             if (tag.trim() == "black" && currentVal > 10) {
-              alert("You can choose only 10 items from this product");
+              $('.goCart').addClass('hideMe');
+          	  $('.btn.btn-default.closeModal').removeClass('hideMe');
+              $(".modal-body").text("You can choose only 10 items from this product");      
+              $('.popUpModal').fadeIn();              
               $qty.val(10).trigger('change');
 			  var quantity = 10;
               check = false;
               addToCart(quantity);
             } else if (tag.trim() == 'limit2' && currentVal > 15) {
-             	alert("You can choose only 15 items from this product");
+                $('.goCart').addClass('hideMe');
+          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
+             	$(".modal-body").text("You can choose only 15 items from this product");                
+                $('.popUpModal').fadeIn();
                 $qty.val(15).trigger('change');
               	check = false;
 				var quantity = 15;
               	addToCart(quantity);
             } else if (tag.trim() == 'limit3' && currentVal > 20) {
-              alert("You can choose only 20 items from this product");
+              $('.goCart').addClass('hideMe');
+          	  $('.btn.btn-default.closeModal').removeClass('hideMe');
+              $(".modal-body").text("You can choose only 20 items from this product");              
+              $('.popUpModal').fadeIn();
               $qty.val(20).trigger('change');
 				var quantity = 20;
               	check = false;
@@ -503,8 +514,7 @@ $(document).ready(function(){
       if (currentVal > 0 ) {
           $qty.val(currentVal - 1).trigger('change');
        $('.cart_items_number.counter_number.animated.rubberBand').text(initialCartValue - 1);
-      }        
- 
+      }         
   });
 
 })

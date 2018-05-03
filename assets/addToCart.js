@@ -21,19 +21,28 @@ function addToCart($url, $id) {
           var tags = cart.product.tags.split(','); 
           tags.forEach(tag => {
             if (tag.trim() == 'black' && parseInt($qty) + 1 > 10) {
-              alert("You can choose only 10 items from this product");
+                $('.goCart').addClass('hideMe');
+          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                $(".modal-body").text("You can choose only 10 items from this product");      
+                $('.popUpModal').fadeIn();
 				var quantity = 10;
               	check = false;
                 addQtyToCart(quantity); 
               	$cartItems.text($cartItemsVal - parseInt($qty) + 10);
             } else if (tag.trim() == 'limit2' && parseInt($qty) + 1 > 15) {
-             	alert("You can choose only 15 items from this product");
+             	$('.goCart').addClass('hideMe');
+          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                $(".modal-body").text("You can choose only 15 items from this product");      
+                $('.popUpModal').fadeIn();
 				var quantity = 15;
               	check = false;
               	addQtyToCart(quantity);
                 $cartItems.text($cartItemsVal - parseInt($qty) + 20);
             } else if (tag.trim() == 'limit3' && parseInt($qty) + 1 > 20) {
-              alert("You can choose only 20 items from this product");
+               $('.goCart').addClass('hideMe');
+          	   $('.btn.btn-default.closeModal').removeClass('hideMe');
+               $(".modal-body").text("You can choose only 20 items from this product");      
+               $('.popUpModal').fadeIn();
 				var quantity = 20;
               	check = false;
               	addQtyToCart(quantity);
@@ -47,7 +56,6 @@ function addToCart($url, $id) {
         }
     });
  function addQtyToCart(qty) {  
-   console.log('qty' + qty);
    var data = {
     	quantity: qty,
     	id: $id
@@ -59,11 +67,12 @@ function addToCart($url, $id) {
         success: function(cart){
           console.log('response from cart after post');
           console.log(cart);
-          if(cart.items.length >= 5) {
-            $('.popUpModal').fadeIn();
-        	
-          }
-          
+          if(cart.items.length > 125) {
+             $(".modal-body").text("You have hit the maximum line items allowed in your cart, please checkout to avoid any issues."); 
+             $('.goCart').removeClass('hideMe');
+             $('.btn.btn-default.closeModal').addClass('hideMe');
+             $('.popUpModal').fadeIn();        	
+          }          
           },
           dataType: 'json'
         });   

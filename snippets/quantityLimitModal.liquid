@@ -1,0 +1,49 @@
+ <div class="popUpModal" style="top: 0px; background: rgba(0, 0, 0, 0.37); display: none" > 
+ <div class="modal-dialog modal-dialog-centered">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <button class="closeModal"><span aria-hidden="true">&times;</span></button>
+            <div class="modal-header">
+              <h4 class="modal-title">Modal Header</h4>
+              
+            </div>
+            <div class="modal-body">
+              <p>you can only choose 10 item of this product.</p>
+            </div>
+            <div class="modal-footer">
+              <a href='/cart' class="btn btn-default">Go to cart</a>
+            </div>
+          </div>
+
+          </div>
+
+      </div>       
+
+<style>
+  .closeModal{
+    float: right;
+    font-size: 25px;
+    font-weight: bold;
+    color: gray;
+    margin:10px;
+  }
+    .popUpModal{
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+      position: fixed;
+      top: 200px;
+   }
+  .modal-header{
+    background-color: #00c4b3;
+  }
+  .modal-content {
+    top: 100px;
+  }
+  .modal-footer {
+    max-height: 70px;
+    padding: 10px 20px 20px;
+  }
+  
+
+</style>

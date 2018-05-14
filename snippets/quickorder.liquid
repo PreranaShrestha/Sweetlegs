@@ -76,9 +76,14 @@
                         <a href="{{ variant.url | collection }}">
                          <!-- {{ product.title }} -  -->{% unless variant.title contains 'Default' %}{{ variant.title }}{% endunless %}
                         </a>
-                      </td> <td>
-                      	{% include "discountWholesale" %}
                       </td>
+                  
+                       
+                        <td class="price">
+                          {% include "discountWholesale" %}
+                        </td>
+                        
+                    
                       <!--<td>
                          {{ variant.price | money }}
                       </td>-->

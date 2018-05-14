@@ -11,24 +11,40 @@
     </div>
    </div>       
 {% assign collHandle = 'quick-order' %}             
-{% assign collection = collections[collHandle] %}   
-{% assign count = 0 %}
+{% assign collection = collections[collHandle] %}  
 {% assign total = cart.attributes.pagination %}
 {% assign searchTag = cart.attributes.tag %}
+{% assign searchType = cart.attributes.search %}
 {% assign totalLineItem = 0 %}
+{% assign discountableItem = 0 %}
+{% assign count = 0 %}
 {% comment %}
 Source: https://gist.github.com/carolineschnapp/9122054
 {% endcomment %}
  {% for item in cart.items %}
-     {% assign totalLineItem = totalLineItem | plus: 1 %}      
-  {% endfor %}   
+     {% assign totalLineItem = totalLineItem | plus: 1 %} 
+      {% if  item.product.type == "SweetLegs One Size" or item.product.type == "SweetLegs Plus" or item.product.type == "SweetLegs Petite" or item.product.type == "SweetLegs Kids" or item.product.type == "ID Only Prints" %}
+      	{% assign discountableItem = discountableItem | plus: item.quantity  %} 
+      {% endif %}      
+  {% endfor %}  
   {% include 'alertMessageLineItem' %}
+{% paginate collections['quick-order'].products by 1000 %}
+  <datalist id="product-list">
+    <select>
+    {% for product in collections['quick-order'].products  %}
+      <option value="{{product.title}}">  </option> 
+    {% endfor %}
+    </select>
+  </datalist>
+{% endpaginate %}   
+      
+      
+      
 <div class="paginationForm">
 {% paginate collection.products by total %}
 <form action="/cart" method="post" class="orderForm">
   <div class="row">
     <div class="large-12 columns" style="text-align: left">
-      
       {% if collection.products_count > 0 %}
 
       
@@ -49,7 +65,9 @@ Source: https://gist.github.com/carolineschnapp/9122054
         <div class="filterBoxWrap">
             <div class="filterBox fBox" data-enable-listfilter="true" data-listfilter-list="#prodList" data-listfilter-by-attribute="data-name">
                 <label>Search</label>
-                <input type="search" class="form-control" placeholder="Search Product">
+               
+              <input type="" list="product-list" class="form-control " style="height: 3.125rem; box-shadow: none; border-radius: 0px" placeholder="Search Product">
+  
             </div>
             <div class="fBox cat">
                 <label>Category</label>
@@ -75,10 +93,8 @@ Source: https://gist.github.com/carolineschnapp/9122054
             </div>
         </div>
 
-
-    	<input class="totalLineItem" data-total={{totalLineItem}} type=hidden />
-      
-
+    	<input class="totalLineItem" data-total={{totalLineItem}} data-initialdiscountableitem= {{discountableItem}} type=hidden />      
+	<div class="content">
         <table>
           <thead>
             <tr>
@@ -90,22 +106,28 @@ Source: https://gist.github.com/carolineschnapp/9122054
           
           <tbody id="prodList">
          
-          {% for product in collection.products %}
+         {% for product in collection.products %}
             {% if product.available%}
-            {% if searchTag contains 'all' %}
-            {% include 'quickorder' %}
-            {% else  %}
-            {% for tag in product.tags %}
-                {% assign tagDowncase = tag | downcase %}  
-				{% if tagDowncase contains searchTag %}				                                     
-             {% include 'quickorder' %}
+              {% if searchTag contains 'all product' %}
+                {% include 'quickorder' %}
+                {% elsif searchType contains 'categories' %}
+                  {% for tag in product.tags %}
+                      {% assign tagDowncase = tag | downcase %}  
+                      {% if tagDowncase contains searchTag %}				                                     
+                   {% include 'quickorder' %}
+                    {% endif %}
+                  {% endfor %}
+                  {% elsif searchType contains 'product' %}
+                    {% assign tagDowncase = product.title | downcase %}  
+                    {% if tagDowncase contains searchTag %}				                                     
+                        {% include 'quickorder' %}
+                    {% endif %}                         	
               {% endif %}
-			{% endfor %}
-            {% endif %}
             {% endif %}
           {% endfor %}
           </tbody>
         </table>
+      </div>
       {% include 'pagination' %}
         <p class="zeroResults hideMe">No Products Found</p>
         <div class="orderSubmit dummyOrder">          
@@ -169,26 +191,28 @@ $('.filterBox').listFilter({
         // eventType: 'change'
   }); 
 
-jQuery(function($) {
+// jQuery(function($) {
  
-  $('[max]').change(function() {
-    var max = parseInt($(this).attr('max'), 10);
-    var value = parseInt($(this).val(), 10) || 0;
-    if (value > max) { 
-      alert('We only have ' + max + ' of this item in stock');
-      $(this).val(max); 
-    }    
-  });
-});
+//   $('[max]').change(function() {
+//     var max = parseInt($(this).attr('max'), 10);
+//     var value = parseInt($(this).val(), 10) || 0;
+//     if (value > max) { 
+//       $('.goCart').addClass('hideMe');
+//       $('.btn.btn-default.closeModal').removeClass('hideMe');
+//       $(".modal-body").text(`We only have ${max} of this item in stock`);      
+//       $('.popUpModal').fadeIn();   
+//       $(this).val(max); 
+//     }    
+//   });
+// });
   
 var xv = 1;
-  
+ 
 $(document).ready(function() {
-
-  
   $('.quantity.field').keydown(function(e) {
+    
           // Allow: backspace, delete, tab, escape, enter and .
-    if ($.inArray(e.keyCode, [46, 8, 9, 27, 110, 190]) !== -1 ||
+    if ($.inArray(e.keyCode, [46, 8, 9 , 27, 110, 190]) !== -1 ||
       // Allow: Ctrl+A
       (e.keyCode == 65 && e.ctrlKey === true) ||
       // Allow: home, end, left, right
@@ -197,11 +221,29 @@ $(document).ready(function() {
       return;
     }
     // Ensure that it is a number and stop the keypress
-    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57 || e.keyCode < 13)) && (e.keyCode < 96 || e.keyCode > 105)) {
+     
       e.preventDefault();
     }
   });
   
+  $('.filterBox .form-control').keydown(function(e) {
+
+          // Allow: backspace, delete, tab, escape, enter and .
+    if ($.inArray(e.keyCode, [46 , 9 , 27, 110, 190]) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode == 65 && e.ctrlKey === true) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)) {
+      // let it happen, don't do anything
+      return false;
+    }
+    // Ensure that it is a number and stop the keypress
+    if (e.keyCode == 13) {
+        e.preventDefault();
+     	 $('.filterBox .form-control').blur();
+    }
+  });
   
   $('.orderForm').submit(function() {
     $(this).find('.quantity.field').each(function() {
@@ -248,6 +290,9 @@ $(document).ready(function() {
   $('#prodList tr').each(function() {
     $(this).attr('data-tag', $(this).attr('data-tag').toLowerCase());
   });
+  
+  
+  
  
   $('.catFilter').change(function() {
     
@@ -263,7 +308,40 @@ $(document).ready(function() {
      $.ajax({
       type: "POST",
       url: '/cart.js',
-      data: {"attributes[pagination]": 500, "attributes[tag]": cv}, /* We are using an attribute named "pagination" */
+      data: {"attributes[pagination]": 500, "attributes[tag]": cv, "attributes[search]": "categories"}, /* We are using an attribute named "pagination" */
+      success: function(d){
+        /* 
+
+        On sucess, reload the page.  
+
+        Warning: If you have scripts on the page that auto tr
+        igger the change even the page may reload forever.
+        If you do, be sure to add code to account for that.
+
+        */
+        //console.log(d.attributes.tag);
+        $('*').css("cursor", "progress");
+        location.href = `${url}?searchCatagory=${cv}`;
+      },
+      dataType: 'json'
+  });    
+  });
+  
+  
+  $('.filterBox .form-control').change(function(e) {
+   
+     e.preventDefault(); 
+    $(this).removeAttr( "type" )
+    var urlWithParamas = window.location.href;
+    var url = urlWithParamas.split('?')[0];
+    var cv = $(this).val().toLowerCase();  
+  	var totalSearch = $('#prodList tr[data-tag*="'+cv+'"]').length;
+    
+    
+     $.ajax({
+      type: "POST",
+      url: '/cart.js',
+      data: {"attributes[pagination]": 500, "attributes[tag]": cv, "attributes[search]": "product"}, /* We are using an attribute named "pagination" */
       success: function(d){
         /* 
 
@@ -274,34 +352,33 @@ $(document).ready(function() {
 
         */
         //console.log(d.attributes.tag);
-        location.href = `${url}?searchCatagory=${cv}`;
+        $('*').css("cursor", "progress");        
+        location.href = `${url}?searchProduct=${cv}`;
       },
       dataType: 'json'
   });    
-  });
-  
-  
-  $('.filterBox .form-control').keyup(function() {
-    clearTimeout(xt);
-    xt = setTimeout(function(){ 
-      xv = $('#prodList tr:visible').size();
-      if (xv == 0) {
-        $('.zeroResults').removeClass('hideMe');
-      } else {
-        $('.zeroResults').addClass('hideMe')
-      }
+    
+//     clearTimeout(xt);
+//     xt = setTimeout(function(){ 
+//       xv = $('#prodList tr:visible').size();
+//       if (xv == 0) {
+//         $('.zeroResults').removeClass('hideMe');
+//       } else {
+//         $('.zeroResults').addClass('hideMe')
+//       }
       
-      floatMe();
+//       floatMe();
       
-    }, 10);        
+//     }, 10);        
   });
 
-    $('.clearMe').click(function() {
-   	var url = window.location.href;
+   $('.clearMe').click(function() {
+   	var urlWithParamas = window.location.href;
+    var url = urlWithParamas.split('?')[0];
      $.ajax({
     type: "POST",
     url: '/cart.js',
-    data: {"attributes[pagination]": 50, "attributes[tag]": "all"}, /* We are using an attribute named "pagination" */
+    data: {"attributes[pagination]": 30, "attributes[tag]": "all product"}, /* We are using an attribute named "pagination" */
     success: function(d){
       /* 
 
@@ -311,8 +388,9 @@ $(document).ready(function() {
       If you do, be sure to add code to account for that.
 
       */
+      $('*').css("cursor", "progress");
        if(!url.includes('reload')){
-          window.location.replace(window.location.href+'?reload');
+          window.location.replace(url+'?reload');
         }
       },
       dataType: 'json'
@@ -345,69 +423,48 @@ function floatMe() {
 }  
 
 $(document).ready(function(){
-  $('.closeModal').on('click',function(){
-    $('.popUpModal').fadeOut(10,function(){
-                $('.popUpModal').modal('hide');
-             });
-  });
  var url = window.location.href;
   if(url.split('=')[1] != undefined) {
    var cv = url.split('=')[1].replace(/%20/g," ");
    var search = cv.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
   } 
-   $.ajax({
-    type: "POST",
-    url: '/cart.js',
-    success: function(d){
-      console.log(d);
-       if(d.attributes.tag != 'all'){
-           if(!url.includes('searchCatagory')){       
-             $.ajax({
-            type: "POST",
-            url: '/cart.js',
-            data: {"attributes[pagination]": 50, "attributes[tag]": "all"}, /* We are using an attribute named "pagination" */
-            success: function(d){
-              /* 
-
-              On sucess, reload the page.  
-
-              Warning: If you have scripts on the page that auto trigger the change even the page may reload forever.
-              If you do, be sure to add code to account for that.
-
-              */
-               if(!url.includes('reload')){
-                 window.location.replace(window.location.href+'?reload');
-                }
-              },
-              dataType: 'json'
-            });
-          } else {
-            $('.catFilter').val(search);
-          }
-        }
-      },
-      dataType: 'json'
-    });
- 
-
-
- $('.quantity.field').change(function(){ 
-   var check = true;
+  if(url.includes('searchCatagory')) {
+    $('.catFilter').val(search);
+  }
+  if(url.includes('searchProduct')) {
+    $('input.form-control').val(search);
+  }
+  
+  $('.quantity.field').change(function(){ 
+    
+   	var check = true;
+   	var max = parseInt($(this).parent().find('.quantity.field').attr('max'), 10);
+    var value = parseInt($(this).parent().find('.quantity.field').val(), 10) || 0;
     var prev = this.defaultValue;
     var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
     var $id = $(this).parent().find('input.variantId').val();
    	var $url = $(this).parent().find('input.variantUrl').val();
     var $qty = $(this).parent().find('.quantity.field');
     var initialLineItemValue = parseInt($qty.data('info'));
-    var totalLine = parseInt($('.totalLineItem').data('total')); 
+    var totalLine = parseInt($('.totalLineItem').data('total'));
+  
+     if (value > max) { 
+          $('.goCart').addClass('hideMe');
+          $('.btn.btn-default.closeModal').removeClass('hideMe');
+          $(this).parent().find('.quantity.field').val(max).trigger('change');
+          $(".modal-body").text(`We do not have that quantity available.`);          
+          $('.popUpModal').fadeIn(); 
+          reload = false;
+     }   
+
    	if(parseInt($qty.val()) == 0 ) {
-    $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) - 1);
-   }
-   	
+    	$('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) - 1);
+   	}
+   	console.log('current value' + currentVal + 'cart value' + initialCartValue + 'prev' + prev);
    if(prev == 0 && initialLineItemValue == 0 && parseInt($qty.val()) != 0 ) {
     $('.totalLineItem').data('total', parseInt($('.totalLineItem').data('total')) + 1);
    }
-   if (totalLine > 3 ) {
+   if (totalLine > 125 ) {
      $qty.val('0');
      $(".modal-body").text("You have hit the maximum line items allowed in your cart, please checkout to avoid any issues."); 
      $('.goCart').removeClass('hideMe');
@@ -425,8 +482,10 @@ $(document).ready(function(){
     } else {
       var updateValue = initialCartValue + (currentVal - initialLineItemValue);
     }
-    $qty.data('info', currentVal);   
-    $('.cart_items_number.counter_number.animated.rubberBand').text(updateValue);
+    $qty.data('info', currentVal);  
+ 
+   
+               
     $.ajax({
         type: 'GET',
         url: `${$url}`,
@@ -436,10 +495,10 @@ $(document).ready(function(){
           var tags = cart.product.tags.split(',');          
           tags.forEach(tag => {
             console.log(currentVal);
-            if (tag.trim() == "black" && currentVal > 10) {
+            if (tag.trim() == "limit1" && currentVal > 10) {
               $('.goCart').addClass('hideMe');
           	  $('.btn.btn-default.closeModal').removeClass('hideMe');
-              $(".modal-body").text("You can choose only 10 items from this product");      
+              $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
               $('.popUpModal').fadeIn();              
               $qty.val(10).trigger('change');
 			  var quantity = 10;
@@ -448,7 +507,7 @@ $(document).ready(function(){
             } else if (tag.trim() == 'limit2' && currentVal > 15) {
                 $('.goCart').addClass('hideMe');
           	    $('.btn.btn-default.closeModal').removeClass('hideMe');
-             	$(".modal-body").text("You can choose only 15 items from this product");                
+             	$(".modal-body").text("Sorry, you have reached the maximum limit for this product.");                
                 $('.popUpModal').fadeIn();
                 $qty.val(15).trigger('change');
               	check = false;
@@ -457,7 +516,7 @@ $(document).ready(function(){
             } else if (tag.trim() == 'limit3' && currentVal > 20) {
               $('.goCart').addClass('hideMe');
           	  $('.btn.btn-default.closeModal').removeClass('hideMe');
-              $(".modal-body").text("You can choose only 20 items from this product");              
+              $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");              
               $('.popUpModal').fadeIn();
               $qty.val(20).trigger('change');
 				var quantity = 20;
@@ -483,7 +542,34 @@ $(document).ready(function(){
       type: 'post',
       url: '/cart/change.js',
       data: data,
-      success: function(d){console.log(d)},
+      success: function(cart){
+        $('.cart_items_number.counter_number.animated.rubberBand').text(cart.item_count);
+        var discountableItem = 0;
+        cart.items.forEach(item => 
+            {
+          		if (item.product_type == "SweetLegs One Size" || item.product_type == "SweetLegs Plus" || item.product_type == "SweetLegs Petite" || item.product_type == "SweetLegs Kids" || item.product_type == "ID Only Prints"){
+                  discountableItem += parseInt(item.quantity);                 
+                } 
+        	});	
+        var initialdiscountableitem = parseInt($('.totalLineItem').data('initialdiscountableitem'));
+          $('.totalLineItem').data('initialdiscountableitem', discountableItem ) ; 
+        if((initialdiscountableitem < 25 && discountableItem >= 25) || (initialdiscountableitem >= 25 && discountableItem < 25) ||
+          (initialdiscountableitem < 50 && discountableItem >= 50) || (initialdiscountableitem >= 50 && discountableItem < 50)) {
+          $('.prodListPlus').addClass('disableButton');
+          $('.prodListMinus').addClass('disableButton');
+          $('.quantity.field').attr('disabled', 'disabled');
+          $.getJSON("/admin/products.json?limit=240&fields=id,images,title&order=created_at+desc", function(productData) {
+              console.log(productData);
+            });
+                 $.getJSON("/admin/products.json?limit=230&page=2", function(productData) {
+              console.log(productData);
+            });
+                      setTimeout(function(){
+                          location.reload();
+                      },1000);
+        }
+        
+      },
       dataType: 'json'
     });
     } else {
@@ -491,21 +577,50 @@ $(document).ready(function(){
       type: 'post',
       url: '/cart/add.js',
       data: data,
-      success: function(d){console.log(d)},
+      success: function(item){ 
+        $('.cart_items_number.counter_number.animated.rubberBand').text(item.quantity + initialCartValue);
+        var initialdiscountableitem = parseInt($('.totalLineItem').data('initialdiscountableitem'));
+        if (item.product_type == "SweetLegs One Size" || item.product_type == "SweetLegs Plus" || item.product_type == "SweetLegs Petite" || item.product_type == "SweetLegs Kids" || item.product_type == "ID Only Prints"){ 
+        	var discountableItem = parseInt(item.quantity) + initialdiscountableitem; 
+        }
+         $('.totalLineItem').data('initialdiscountableitem', discountableItem ) ; 
+
+        if((initialdiscountableitem < 25 && discountableItem >= 25) || (initialdiscountableitem >= 25 && discountableItem < 25) ||
+          (initialdiscountableitem < 50 && discountableItem >= 50) || (initialdiscountableitem >= 50 && discountableItem < 50)) {
+          $('.prodListPlus').addClass('disableButton');
+          $('.prodListMinus').addClass('disableButton');
+          $('.quantity.field').attr('disabled', 'disabled');
+           $.getJSON("/admin/products.json?limit=240&fields=id,images,title&order=created_at+desc", function(productData) {
+              console.log(productData);
+            });
+                 $.getJSON("/admin/products.json?limit=230&page=2", function(productData) {
+              console.log(productData);
+            });
+          setTimeout(function(){
+              location.reload();
+          },1000);
+        }
+      },
       dataType: 'json'
     });
     }
    }
   });
+
    $('.prodListPlus').on('click',function(){
       var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
       var $qty = $(this).parent().find('.quantity.field');
       var currentVal = parseInt($qty.val());
       if (!isNaN(currentVal)) {
-          $qty.val(currentVal + 1).trigger('change');
+       $qty.val(currentVal + 1).trigger('change');
+//         setTimeout(function() {
+//     		$qty.val(currentVal + 1).trigger('change');
+//   		}, 2000);
+         
       }
-    $('.cart_items_number.counter_number.animated.rubberBand').text(initialCartValue + 1);
+    //$('.cart_items_number.counter_number.animated.rubberBand').text(initialCartValue + 1);
   });
+ 
   $('.prodListMinus').on('click',function(){
      var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
      var $id = $(this).parent().find('input.variantId').val();
@@ -513,13 +628,11 @@ $(document).ready(function(){
       var currentVal = parseInt($qty.val());
       if (currentVal > 0 ) {
           $qty.val(currentVal - 1).trigger('change');
-       $('.cart_items_number.counter_number.animated.rubberBand').text(initialCartValue - 1);
+       //$('.cart_items_number.counter_number.animated.rubberBand').text(initialCartValue - 1);
       }         
   });
 
-})
-  
-  
+})  
 </script>
                     
 {% endif %}            

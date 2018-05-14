@@ -1,3 +1,5 @@
+
+{{ 'offcanvas.scss' | asset_url | stylesheet_tag }}
 <div class="menu-offcanvas">
   <div class="offcanvas_close offcanvas_target"></div>
   
@@ -41,7 +43,7 @@
   {%- endif -%}
 
   {%- comment -%} MAIN MENU {%- endcomment -%}
-  <div class="offcanvas_navigation mm-wrapper">
+  
     <nav id="menu" class="offcanvas_target">
       <ul class="offcanvas_menu">
         {%- if section.settings.header_menu != '' -%}
@@ -91,5 +93,5 @@
         {%- endif -%}
       </ul>
     </nav>
-  </div>
+
 </div>

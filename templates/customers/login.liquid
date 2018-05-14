@@ -1,3 +1,4 @@
+
 <div id="primary" class="content-area">
   {%- include 'page-header' -%}
   <div id="content" class="site-content">
@@ -35,7 +36,7 @@
                             <span class="text-inner">{{ 'customer.login.password' | t }} <span class="required">*</span></span>
                           </span>
                         </label>
-                        <input type="password" required="required" class="input-text" name="customer[password]" id="login-password" autocorrect="off" autocapitalize="off" autofocus />
+                        <input type="password" required="required" class="input-text" name="customer[password]" id="login-password" autocorrect="off" autocapitalize="off"  />
                       </p>
                     </div>
                     {%- endif -%}
@@ -90,3 +91,17 @@
     </div>
   </div>
 </div>
+
+<script>
+ 
+  
+$(document).ready(function () {
+
+    if ($('input:-webkit-autofill'))
+    {
+      $('.minimal-form-input').removeClass('no-text');
+      $('.minimal-form-input').addClass('has-text');
+    }
+});
+  
+</script>

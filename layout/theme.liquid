@@ -91,6 +91,7 @@
   {%- section 'mega-menu' -%}
   
   <div class="offcanvas_container">
+  <input class='customer-tag' value="{{customer.tags}}" type="hidden" />
     <div class="offcanvas_main_content">
       <div class="page-wrapper">
         <main id="main">
@@ -111,10 +112,15 @@
   
   <script>
     $(document).ready(function(){
-       $('.closeModal').on('click',function(){
-         location.reload();
-         
-       });
+      if(($('.customer-tag').val() == 'distributor' || $('.customer-tag').val() == 'Distributor') &&  $(window).width() < 500){
+        $('#topbar.topbar').css('display','block');
+        //$('.topbar-content.medium-6.columns.text-left').css('display','none');
+        //$('.topbar-menu-container').css('z-index', '999');
+      }
+      if(performance.navigation.type == 2 && "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch){
+         location.reload(true);
+      }
+
       $('.store-switcher-cad').on('click', function(){
       	window.top.location.href = 'https://sweetlegs.ca'+window.location.pathname+'/?no-redirect'; 
       })
@@ -128,73 +134,102 @@
         console.log(e);
         $(this).addClass('offcanvas_close');
       });
-      $('.input-text.qty.text').change(function(){ 
+      $('.input-text.qty.text').change(function(){
         var $qty = $(this).parent().find('.input-text.qty.text').val();
         var $id = $(this).parent().find('.input-text.qty.text').data('id');
         var $url = $(this).parent().find('.input-text.qty.text').data('url');
         var answer = true;
-        var check = true;
-        if(parseInt($qty) == 0) {
-      	var answer = confirm("Are you sure you want to delete the  product?")
-        }       
-        $.ajax({
-        type: 'GET',
-        url: `${$url}`,
-        cache: false,
-        dataType: 'json',
-        success: function(cart) {
-          var tags = cart.product.tags.split(','); 
-          tags.forEach(tag => {
-            if (tag.trim() == 'black' && parseInt($qty) > 10) {
-               $('.goCart').addClass('hideMe');
-          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
-                $(".modal-body").text("You can choose only 10 items from this product");      
-                $('.popUpModal').fadeIn();
-				var quantity = 10;
-                check = false;
-              addToCart(quantity);
-            } else if (tag.trim() == 'limit2' && parseInt($qty) > 15) {
-             	$('.goCart').addClass('hideMe');
-          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
-                $(".modal-body").text("You can choose only 15 items from this product");      
-                $('.popUpModal').fadeIn();
-				var quantity = 15;
-              	addToCart(quantity);
-                check = false;
-            } else if (tag.trim() == 'limit3' && parseInt($qty) > 20) {
-                $('.goCart').addClass('hideMe');
-          	    $('.btn.btn-default.closeModal').removeClass('hideMe');
-                $(".modal-body").text("You can choose only 20 items from this product");      
-                $('.popUpModal').fadeIn();
-				var quantity = 20; 
-              	addToCart(quantity);
-                check = false;
+        var reload = true;
+        var max = parseInt($(this).attr('max'), 10);
+        var value = parseInt($(this).val(), 10) || 0;
+        function  addToCart(quantity, reload) {  
+            var data = {
+            quantity: quantity,
+            id: $id
             }
-          });
-          if(check) {
-    	  	addToCart($qty, check);
-          }
+
+            jQuery.ajax({
+              type: 'post',
+              url: '/cart/change.js',
+              data: data,
+              success: function(d){console.log(d); 
+                                   if(reload) {
+                                     if ($('.prodPlus:hover').length == 0 && $('.prodMinus:hover').length == 0) {
+                                       
+                                         location.reload();
+                                     } else if ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch){
+                                       	setTimeout(function(){location.reload();}, 3000);
+                                     }
+                 
+                                   };
+                                  }, 
+              dataType: 'json'
+            });
+
+          } 
+        if (value > max) { 
+          reload = false;
+          $('.goCart').addClass('hideMe');
+          $('.btn.btn-default.closeModal').removeClass('hideMe');
+		   addToCart(max, reload);
+          $(".modal-body").text(`We do not have that quantity available.`);          
+          $('.popUpModal').fadeIn(); 
+          
+         
+        }   
+        if(parseInt($qty) == 0) {
+      	 var answer = confirm("Are you sure you want to delete the  product?");         
+        }  
         
-        }
-    });
-     function  addToCart(quantity, check) {  
-        console.log("this hit");
-        var data = {
-        quantity: quantity,
-        id: $id
-        }
-
-        jQuery.ajax({
-          type: 'post',
-          url: '/cart/change.js',
-          data: data,
-          success: function(d){console.log(d); 
-                               if(check) {location.reload()};
-                              },
-          dataType: 'json'
+        if(answer == true) {
+            $.ajax({
+            type: 'GET',
+            url: `${$url}`,
+            cache: false,
+            dataType: 'json',
+            success: function(cart) {
+              var tags = cart.product.tags.split(','); 
+              tags.forEach(tag => {
+                if (tag.trim() == 'limit1' && parseInt($qty) > 10) {
+                   $('.goCart').addClass('hideMe');
+                    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                    $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
+                    $('.popUpModal').fadeIn();
+                    var quantity = 10;
+                    reload = false;
+                  addToCart(quantity);
+                } else if (tag.trim() == 'limit2' && parseInt($qty) > 15) {
+                    $('.goCart').addClass('hideMe');
+                    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                    $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
+                    $('.popUpModal').fadeIn();
+                    var quantity = 15;
+                    addToCart(quantity);
+                    reload = false;
+                } else if (tag.trim() == 'limit3' && parseInt($qty) > 20) {
+                    $('.goCart').addClass('hideMe');
+                    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                    $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
+                    $('.popUpModal').fadeIn();
+                    var quantity = 20; 
+                    addToCart(quantity);
+                    reload = false;
+                }
+              });
+              if(reload) {
+                addToCart($qty, reload);
+              }        
+            }
         });
-
-      } 
+         
+        } else {
+          if ($('.prodPlus:hover').length == 0 && $('.prodMinus:hover').length == 0) {
+              location.reload();
+          } else if ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch){
+            	setTimeout(function(){location.reload();}, 3000);
+                                       
+                                     }
+        }
      });
       
       $('.prodPlus').on('click',function(){
@@ -225,7 +260,30 @@
 
     })
    
+    $('.bulk-order-button').on('click', function(e) {  
+    
+      $('*').css("cursor", "progress");      
+             $.ajax({
+            type: "POST",
+            url: '/cart.js',
+            data: {"attributes[pagination]": 30, "attributes[tag]": "all product"}, /* We are using an attribute named "pagination" */
+            success: function(d){
+              /* 
 
+              On sucess, reload the page.  
+
+              Warning: If you have scripts on the page that auto trigger the change even the page may reload forever.
+              If you do, be sure to add code to account for that.
+
+              */
+             
+          window.top.location.href = '/pages/bulk-order-form';
+         
+      },
+      dataType: 'json'
+    });
+      
+    });
   </script>
 
   <script>

@@ -1,4 +1,4 @@
-function addToCart($url, $id) {
+function addToCart($url, $id, inputQty) {
   var $qty = 0;
   var check = true;
   var $cartItems = $('.cart_items_number.counter_number.animated.rubberBand');
@@ -20,28 +20,28 @@ function addToCart($url, $id) {
         success: function(cart) {
           var tags = cart.product.tags.split(','); 
           tags.forEach(tag => {
-            if (tag.trim() == 'black' && parseInt($qty) + 1 > 10) {
+            if (tag.trim() == 'limit1' && parseInt($qty) + inputQty > 10) {
                 $('.goCart').addClass('hideMe');
           	    $('.btn.btn-default.closeModal').removeClass('hideMe');
-                $(".modal-body").text("You can choose only 10 items from this product");      
+                $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
                 $('.popUpModal').fadeIn();
 				var quantity = 10;
               	check = false;
                 addQtyToCart(quantity); 
               	$cartItems.text($cartItemsVal - parseInt($qty) + 10);
-            } else if (tag.trim() == 'limit2' && parseInt($qty) + 1 > 15) {
+            } else if (tag.trim() == 'limit2' && parseInt($qty) + inputQty > 15) {
              	$('.goCart').addClass('hideMe');
           	    $('.btn.btn-default.closeModal').removeClass('hideMe');
-                $(".modal-body").text("You can choose only 15 items from this product");      
+                $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
                 $('.popUpModal').fadeIn();
 				var quantity = 15;
               	check = false;
               	addQtyToCart(quantity);
                 $cartItems.text($cartItemsVal - parseInt($qty) + 20);
-            } else if (tag.trim() == 'limit3' && parseInt($qty) + 1 > 20) {
+            } else if (tag.trim() == 'limit3' && parseInt($qty) + inputQty > 20) {
                $('.goCart').addClass('hideMe');
           	   $('.btn.btn-default.closeModal').removeClass('hideMe');
-               $(".modal-body").text("You can choose only 20 items from this product");      
+               $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
                $('.popUpModal').fadeIn();
 				var quantity = 20;
               	check = false;
@@ -50,8 +50,8 @@ function addToCart($url, $id) {
             }
           });
           if(check) {
-    		addQtyToCart(parseInt($qty) + 1);
-            $cartItems.text($cartItemsVal + 1);
+    		addQtyToCart(parseInt($qty) + inputQty);
+            $cartItems.text($cartItemsVal + inputQty);
           }
         }
     });

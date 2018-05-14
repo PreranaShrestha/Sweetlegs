@@ -1,5 +1,6 @@
+{{ 'topbar.scss' | asset_url | stylesheet_tag }} 
 <div id="topbar" class="topbar">
-  <div class="row">
+  <div class="row" style="pointer-events: all">
     <div class="topbar-content medium-6 columns text-left">
       {%- if section.settings.header_currency != '' -%}
       <nav class="language_currency">
@@ -54,8 +55,8 @@
           {%- if shop.customer_accounts_enabled -%}
           {%- if customer -%}
           {% if customer.tags contains "distributor" or customer.tags contains "Distributor" %}
-           <li class="menu-item ">
-            <a href="/pages/bulk-order-form">
+           <li class="menu-item bulk-order-button">
+            <a href="#">
               {{ 'Quick Order Form'}}
             </a>
           </li>

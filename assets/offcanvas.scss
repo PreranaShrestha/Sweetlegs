@@ -1,0 +1,41 @@
+
+
+.mm-panels, .mm-panels>.mm-panel {
+  top: 10px;
+}
+.social-icons.mm-listview li a:before {
+ 	width: 30px; 
+ 	margin: 5px;
+}
+
+.offcanvas_aside_content {
+  padding: 100px;
+}
+
+@media only screen and (max-width: 39.9375em) {
+  header.site-header .header-wrapper .site-branding {
+      width: 60% !important;
+  }
+  .mm-panels, .mm-panels>.mm-panel {
+      top: 35px;
+    
+  }
+  .mob_inputbox .search-mobile {
+      display: block;
+      position: absolute;
+      top: -60px;
+	}
+  .offcanvas_aside .offcanvas_aside_content {
+    padding: 20px 50px 0;
+   }
+  .mm-menu .social-icons {
+    margin: 0px;
+   }
+  .mm-listview {
+    line-height: 34px;
+	}
+   header.site-header .header-wrapper .nav {
+      width: 20%;
+      padding-left: 0;
+  }
+}

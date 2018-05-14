@@ -4,8 +4,8 @@
       <a href="/account">{{ 'customer.account.title' | t }}</a>
     </li>
      {% if customer.tags contains "distributor" or customer.tags contains"Distributor" %}
-    <li>
-    <a href="/pages/bulk-order-form">Quick Order Form</a>
+    <li class="bulk-order-button">
+    <a href="#">Quick Order Form</a>
     </li>
       {% endif %}
     <li>

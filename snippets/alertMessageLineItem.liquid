@@ -84,14 +84,20 @@
       <div class="modal-header">
         <h4 class="modal-title">WARNING:</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="padding: 40px 10px 0px 10px; text-align: center">
         <p>You have hit the maximum line items allowed in your cart, please checkout to avoid any issues.</p>
       </div>
       <div class="modal-footer">
         <a href='/cart' class="btn btn-default goCart">Checkout</a>
-        <button class="btn btn-default closeModal" style="padding-bottom: 10px; margin-top: 0px;">OK</a>
+        <button class="btn btn-default closeModal" style="margin-top: 0px;">OK</a>
       </div>
     </div>
    </div>
  </div>       
 
+<script type="text/javascript">
+   $('.closeModal').on('click',function(e){
+      e.preventDefault();
+      $('.popUpModal').fadeOut(0);          
+  });
+</script>

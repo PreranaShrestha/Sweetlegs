@@ -31,7 +31,7 @@
                     {%- for item in cart.items -%}
                     <tr class="cart_item">
                       <td class="product-remove">
-                        <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="remove" title="{{ 'cart.general.remove' | t | escape }}"><span class="remove">×</span></a>
+                <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="remove" title="{{ 'cart.general.remove' | t | escape }}"><span class="remove">×</span></a>
                       </td>
                       <td class="product-thumbnail">
                         <a href="{{ item.url | within: collections.all }}">
@@ -78,7 +78,7 @@
                       {%- endif -%}
                       </td>
                       <td class="product-price">
-                        {% include "distributorDiscountPrice" %}
+                        <div class="price-old"> {% if item.original_price != item.price %} {{ item.original_price | money }} {% endif %}</div> <span>{{ item.price | money }} {% for discount in item.discounts %} {% endfor %}</span>
                                             
                         
                       </td>
@@ -87,7 +87,7 @@
                                  <!-- Custom Code -->
                        <div class="quantity cartQty">
                           <span class="prodMinus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                            <input id="updates_{{ item.key }}" onfocus="this.select()" data-id="{{item.variant_id}}" data-url="{{item.url}}" type="number" max="{{ item.variant.inventory_quantity }}" step="1" min="0" name="updates[]" value="{{ item.quantity }}" title="{{ 'cart.label.quantity' | t }}" class="input-text qty text" size="4" pattern="[0-9]*" />
+                            <input id="updates_{{ item.key }}" onfocus="this.select()" data-id="{{item.variant_id}}" data-url="{{item.url}}" type="number" max="{{ item.variant.inventory_quantity }}" step="1" min="0" name="updates[]" value="{{ item.quantity }}" title="{{ 'cart.label.quantity' | t }}" type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="input-text qty text" size="4" pattern="[0-9]*" />
                           <span class="prodPlus"><i class="fa fa-plus" aria-hidden="true"></i></span>
                             <!-- End Custom Code -->
                         </div>

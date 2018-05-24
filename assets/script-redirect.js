@@ -1,23 +1,22 @@
 jQuery(function($) {
-   var redirect_ca = $.cookie('redirect_ca');
+   var redirect_us = $.cookie('redirect_us');
 
     var url = window.location.href,
       status = url.split('?')[1];
-
-      console.log(status);
-    if (status == 'no-redirect') {
-      $.cookie('redirect_ca', 'no', {
+      
+    if (status == 'no-redirect' ) {
+      $.cookie('redirect_us', 'no', {
             expires: 1 // the number of days cookie  will be effective
-      });    
+      });      
     }
 
-    if ( status == 'redirected_us') {
+    if ( status == 'redirected_ca') {
       setTimeout(function () {
           $('#redirect-bar').slideDown('slow');  
         }, 600);
     }
-    else if (redirect_ca == 'no') {
-        return false; 
+    else if (redirect_us == 'no') {
+        return false;
     } 
 
     // onclick close redirect bar
@@ -25,16 +24,18 @@ jQuery(function($) {
       e.preventDefault();
       $('#redirect-bar').slideUp('slow'); 
       
-      $.cookie('redirect_ca', 'no', {
+      
+      $.cookie('redirect_us', 'no', {
             expires: 1 // the number of days cookie  will be effective
       });
       
     });
 
-
- // $('.redirect-btn:not(.no)').hide();
-
+  //$('.redirect-btn:not(.no)').hide();
   // redirect
+  
+  //this section needs to be edited on both ca and us sites 
+  
   jQuery.ajax({
     url: 'https://ipapi.co/jsonp/',
     type: 'POST',
@@ -47,12 +48,13 @@ jQuery(function($) {
 
       var url_account = window.location.pathname;
       
-      if (location.country === 'CA') {}
-      else {      
-        if (status == 'no-redirect' || redirect_ca == 'no' || url_account == '/account/login') {}
+      if (location.country === 'CA') {
+
+        if (status == 'no-redirect' || redirect_us == 'no' || url_account == '/account/login') {}
         else {
-         window.top.location.href = 'https://sweetlegs.com'+window.location.pathname+'/?redirected_ca'; 
-        }       
+         window.top.location.href = 'https://sweetlegs.ca'+window.location.pathname+'?redirected_us'; 
+        }
+
       }   
     }
   });

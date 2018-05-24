@@ -2,7 +2,7 @@
   {%- if section.settings.sidebar == 'left' -%}
   <div class="column-container small-12 large-5 float-{{ section.settings.sidebar }}">
     <div class="column-inner"{% if section.settings.sidebar_image %} style="background-image:url({{ section.settings.sidebar_image | img_url:'master' }});"{% endif %}>
-      <a href="/collections/sale-items"> <div class="empty_space" style="height:{{ section.settings.sidebar_height | default:400 | plus:0 }}px;"><span class="empty_space_inner"></span></div></a>
+      <div class="empty_space" style="height:{{ section.settings.sidebar_height | default:400 | plus:0 }}px;"><span class="empty_space_inner"></span></div>
     </div>
   </div>
   {%- endif -%}
@@ -25,7 +25,7 @@
 
         {%- if section.settings.sidebar == 'left' or section.settings.sidebar == 'right' -%}
         <div class="empty_space" style="height:50px"><span class="empty_space_inner"></span></div>
-        <a href="/collections/sale-items"> <h3 class="shortcode_title_1">{{ collections[section.settings.collection].title }}</h3></a>
+        <h3 class="shortcode_title_1">{{ collections[section.settings.collection].title }}</h3>
         <h4 class="shortcode_title_2">{{ section.settings.heading | escape }}</h4>
         <div class="empty_space" style="height:40px"><span class="empty_space_inner"></span></div>
         {%- endif -%}

@@ -1944,7 +1944,6 @@ function gm_authFailure() {
         .replace(/-+/g, "-");
     },
     _initVariants: function() {
-     
       var v = {
         $container: this.$container,
         enableHistoryState: this.$container.data("enable-history-state") || !1,

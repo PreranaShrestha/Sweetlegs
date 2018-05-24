@@ -1,11 +1,9 @@
-.closeModal{
-  float: right;
-  font-size: 25px;
-  font-weight: bold;
-  color: gray;
-  margin:10px;
-}
 
+
+.disableButton {
+   pointer-events: none;
+   cursor: progress;
+}
 .orderForm .quantity.field {
 border-bottom: 1px solid #cacaca;
 text-align: center;
@@ -40,7 +38,7 @@ text-align: right;
 }
 .orderSubmitFloat {
 position: fixed;
-bottom:  0;
+bottom:  10px;
 left: 0;
 right: 0; 
 z-index: 10;
@@ -194,28 +192,10 @@ padding-right: 0;
   }
   
 }
-.popUpModal{
-  height: 100%; 
-  width: 100%; 
-  display:none;
-  position: fixed; 
-  top: 100px; 
-  right: 300;
-  z-index: 999;
- }
-.modal-header{
-  background-color: #00c4b3;
-}
-.btn.btn-default{
-  background-color: #00c4b3;
-    display: inline-block;
-    padding: 15px 30px;
-    width: auto;
-    font-size: .75rem;
-    line-height: 1.125rem;
-    font-weight: 600;
-    letter-spacing: .125rem;
-    text-transform: uppercase;
-    margin-left: 15px;
-}  
-     
+
+
+ input::-webkit-calendar-picker-indicator {
+   color: #00c4b3;
+   font-size: 13px;
+  background-color: inherit;
+  }   

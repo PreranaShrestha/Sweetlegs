@@ -87,7 +87,7 @@
                                  <!-- Custom Code -->
                        <div class="quantity cartQty">
                           <span class="prodMinus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                            <input id="updates_{{ item.key }}" onfocus="this.select()" data-id="{{item.variant_id}}" data-url="{{item.url}}" type="number" max="{{ item.variant.inventory_quantity }}" step="1" min="0" name="updates[]" value="{{ item.quantity }}" title="{{ 'cart.label.quantity' | t }}" type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="input-text qty text" size="4" pattern="[0-9]*" />
+                            <input id="updates_{{ item.key }}" onfocus="this.select()" data-id="{{item.variant_id}}" data-url="{{item.url}}" type="number" max="{{ item.variant.inventory_quantity }}" step="1" min="0" name="updates[]" value="{{ item.quantity }}" title="{{ 'cart.label.quantity' | t }}" type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="input-text qty text cart" size="4" pattern="[0-9]*" />
                           <span class="prodPlus"><i class="fa fa-plus" aria-hidden="true"></i></span>
                             <!-- End Custom Code -->
                         </div>
@@ -174,7 +174,12 @@
   </div>
 </div>
 <script type="text/javascript">
-  
+  $.ajax({
+      type: 'POST',
+      url: '/cart/update.js',
+      data: '{attributes[pagination]="",attributes[tag]=""}',
+      dataType: 'json'
+  }); 
  $('.closeModal').on('click',function(){
    location.reload();
 

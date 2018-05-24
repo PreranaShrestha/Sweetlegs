@@ -52,8 +52,7 @@
 <!--[if lte IE 9]><script src="{{ 'theme.js' | asset_url }}"></script><![endif]-->
 
 
-<!--CUSTOM EDITS FOR SCRIPTS ><!-->
+<!--CUSTOM EDITS FOR SCRIPTS-->
 {{ '//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js' | script_tag }}
 {{ 'jquery.cookie.js' | asset_url | script_tag }}
-<!-----{{ 'script-redirect.js' | asset_url | script_tag }}-->
-<!---------------------------]><!-->
+{{ 'script-redirect.js' | asset_url | script_tag }}

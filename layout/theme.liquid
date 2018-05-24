@@ -260,30 +260,11 @@
 
     })
    
-    $('.bulk-order-button').on('click', function(e) {  
-    
-      $('*').css("cursor", "progress");      
-             $.ajax({
-            type: "POST",
-            url: '/cart.js',
-            data: {"attributes[pagination]": 500, "attributes[tag]": "all product"}, /* We are using an attribute named "pagination" */
-            success: function(d){
-              /* 
-
-              On sucess, reload the page.  
-
-              Warning: If you have scripts on the page that auto trigger the change even the page may reload forever.
-              If you do, be sure to add code to account for that.
-
-              */
-             
-          window.top.location.href = '/pages/bulk-order-form';
-         
-      },
-      dataType: 'json'
-    });
+//     $('.bulk-order-button').on('click', function(e) {      
+//       $('*').css("cursor", "progress");                  
+//           window.top.location.href = '/pages/bulk-order-form';         
       
-    });
+//     });
   </script>
 
   <script>

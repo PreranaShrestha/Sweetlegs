@@ -134,7 +134,7 @@
         console.log(e);
         $(this).addClass('offcanvas_close');
       });
-      $('.input-text.qty.text').change(function(){
+      $('.input-text.qty.text.cart').change(function(){
         var $qty = $(this).parent().find('.input-text.qty.text').val();
         var $id = $(this).parent().find('.input-text.qty.text').data('id');
         var $url = $(this).parent().find('.input-text.qty.text').data('url');
@@ -143,6 +143,7 @@
         var max = parseInt($(this).attr('max'), 10);
         var value = parseInt($(this).val(), 10) || 0;
         function  addToCart(quantity, reload) {  
+  
             var data = {
             quantity: quantity,
             id: $id
@@ -167,15 +168,14 @@
             });
 
           } 
-        if (value > max) { 
+        if (value > max) {         
           reload = false;
           $('.goCart').addClass('hideMe');
           $('.btn.btn-default.closeModal').removeClass('hideMe');
-		   addToCart(max, reload);
+		  addToCart(max, reload);
           $(".modal-body").text(`We do not have that quantity available.`);          
           $('.popUpModal').fadeIn(); 
-          
-         
+                   
         }   
         if(parseInt($qty) == 0) {
       	 var answer = confirm("Are you sure you want to delete the  product?");         
@@ -260,11 +260,7 @@
 
     })
    
-//     $('.bulk-order-button').on('click', function(e) {      
-//       $('*').css("cursor", "progress");                  
-//           window.top.location.href = '/pages/bulk-order-form';         
-      
-//     });
+   
   </script>
 
   <script>

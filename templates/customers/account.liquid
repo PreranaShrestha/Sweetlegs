@@ -19,6 +19,7 @@
                         <th>{{ 'customer.orders.date' | t }}</th>
                         <th>{{ 'customer.orders.payment_status' | t }}</th>
                         <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                        <th>{{ 'customer.order.quantity' | t }}</th>
                         <th>{{ 'customer.orders.total' | t }}</th>
                       </tr>
                     </thead>
@@ -31,6 +32,11 @@
                         <td data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | date: format: 'month_day_year' }}</td>
                         <td data-label="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
                         <td data-label="{{ 'customer.orders.fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                        <td data-label="{{ 'customer.orders.quantity' | t }}" class="order-quantity-outer">
+                          {% for line_item in order.line_items %}
+                            <span class="order-quantity">{{ line_item.quantity }}</span>
+                          {% endfor %}
+                        </td>
                         <td data-label="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</td>
                       </tr>
                       {% endfor %}

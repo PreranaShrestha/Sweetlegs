@@ -21,23 +21,7 @@
 {% comment %}
 Source: https://gist.github.com/carolineschnapp/9122054
 {% endcomment %}
-
-  {% include 'alertMessageLineItem' %}
-<!--       {% if cart.attributes.pagination %}
-      {{cart.attributes.pagination}} 
-
-   <script>
-    $.ajax({
-      type: 'POST',
-      url: '/cart/update.js',
-      data: 'attributes[pagination]=',
-     cache: false,
-      dataType: 'json'
-    });
-  </script>
- 
-{% endif %} -->   
-      {{cart.attributes.pagination}}
+  {% include 'alertMessageLineItem' %}  
 <div class="paginationForm">
 {% paginate collection.products by 500 %}
 <form action="/cart" method="post" class="orderForm">
@@ -133,9 +117,9 @@ Source: https://gist.github.com/carolineschnapp/9122054
   {% else %}
     <p>There are no products in this view.</p>
   {% endif %}
-
-</form>
 {% endpaginate %}
+</form>
+
       </div><!--paginationForm-->
 
 {% if collection.products_count > 0 %}

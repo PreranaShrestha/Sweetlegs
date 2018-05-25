@@ -227,7 +227,7 @@
                           <div class="variations_button">
                             <div class="quantity proQty">
                               <span class="prodMinus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                                <input type="number" step="1" min="1" max="20" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric" />
+                                <input type="number" step="1" min="1" max="20" name="quantity" value="1" title="Qty" onfocus="this.select()" type="tel" onClick="this.setSelectionRange(0, this.value.length)" class="input-text qty text" size="4" pattern="[0-9]*" inputmode="numeric" />
                               <span class="prodPlus"><i class="fa fa-plus" aria-hidden="true"></i></span>
                             </div>
                             <button id="AddToCart-{{ section.id }}" type="submit" class="add_to_cart_button button btn1 bshadow alt{% unless current_variant.available %} hide{% endunless %}" {% unless current_variant.available %}disabled="disabled"{% endunless %}>

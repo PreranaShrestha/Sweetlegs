@@ -1,0 +1,131 @@
+<div id="static-block-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="static-block">
+  <div class="static-block text-{{ section.settings.align }}{% if section.settings.parallax %} static-block-parallax{% endif %}" style="color:{{ section.settings.color | default:'#000' }};{% if section.settings.image %}background-image:url({{ section.settings.image | img_url: 'master' }}){% endif %}">
+    {%- capture static_content -%}
+      {%- if section.settings.heading != '' and section.settings.exchange == false -%}
+      <h2 class="static-heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.caption != '' -%}
+      <div class="static-caption">{{ section.settings.caption }}</div>
+      {%- endif -%}
+    
+      {%- if section.settings.heading != '' and section.settings.exchange == true -%}
+      <h2 class="static-heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.button != '' -%}
+      <a href="{{ section.settings.link | default:'#' }}" class="static-button">{{ section.settings.button }}</a>
+      {%- endif -%}
+    {%- endcapture -%}
+    
+    <div class="row">
+    {%- case section.settings.position -%}
+      {%- when 'center' -%}
+      <div class="large-12 columns">{{ static_content }}</div>
+    
+      {%- when 'left' -%}
+      <div class="large-6 columns">{{ static_content }}</div>
+      <div class="large-6 columns hide-for-small-only hide-for-medium-only"></div>
+    
+      {%- when 'right' -%}
+      <div class="large-6 columns hide-for-small-only hide-for-medium-only"></div>
+      <div class="large-6 columns">{{ static_content }}</div>
+    {%- endcase -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Static block",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Background image"
+      },
+      {
+        "type": "checkbox",
+        "id": "parallax",
+        "label": "Parallax effect"
+      },
+      {
+        "type": "html",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Heading"
+      },
+      {
+        "type": "html",
+        "id": "caption",
+        "label": "Caption",
+        "default": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem."
+      },
+      {
+        "type": "checkbox",
+        "id": "exchange",
+        "label": "Exchange heading & caption positions"
+      },
+      {
+        "type": "select",
+        "id": "position",
+        "label": "Position",
+        "options": [
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "align",
+        "label": "Text align",
+        "options": [
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "button",
+        "label": "Button",
+        "default": "Shop"
+      },
+      {
+        "type": "url",
+        "id": "link",
+        "label": "Link"
+      },
+      {
+        "type": "color",
+        "id": "color",
+        "label": "Color",
+        "default": "#000000"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Static block",
+        "category": "Others"
+      }
+    ]
+  }
+{% endschema %}

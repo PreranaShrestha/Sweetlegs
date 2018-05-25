@@ -1,0 +1,103 @@
+<style>
+  .closeModal{
+    font-size: 25px;
+    font-weight: bold;
+    color: #57C1B3;
+    margin:10px;
+    text-align: center;
+  }
+   .popUpModal{
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+      position: fixed;
+      top: 200px;
+   }
+  .modal-header{
+    background-color: #57C1B3;
+    font-weight: bold;
+  }
+  .modal-content {
+    text-align: center;
+    color: white;
+    top: 100px;
+    background-color: #57C1B3;
+    max-width: 550px;
+    border: none;
+    padding: 20px;
+  }
+  .modal-footer {
+    max-height: 70px;
+    margin-top: 0px;
+    text-align: center;
+    border-top: none;
+  }
+  .hideMe{
+  	display: none !important; 
+  }
+  .popUpModal {
+    height: 100%; 
+    width: 100%; 
+    display:none;
+    position: fixed; 
+    top: 100px; 
+    right: 300;
+    z-index: 999;
+ }
+ .modal-header {
+   background-color: #57C1B3;
+   border-bottom: none;
+   max-height: 30px;
+ }
+  .modal-body {
+    padding:  30px;
+    padding-bottom: 0px;
+    text-align: left;
+    font-family:"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+  
+  }
+ .btn.btn-default{
+    background-color: white;
+    display: inline-block;
+    padding: 15px 30px;
+    width: auto;
+    font-size: .75rem;
+    line-height: 1.125rem;
+    font-weight: 600;
+    letter-spacing: .125rem;
+    text-transform: uppercase;
+    margin-left: 15px;
+   
+} 
+  .btn-default {
+    color: #57C1B3;
+    border: none;
+  }
+</style> 
+
+<div class="popUpModal" style="top: 0px; background: rgba(0, 0, 0, 0.37); display: none" > 
+ <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">WARNING:</h4>
+      </div>
+      <div class="modal-body" style="padding: 40px 10px 0px 10px; text-align: center">
+        <p>You have hit the maximum line items allowed in your cart, please checkout to avoid any issues.</p>
+      </div>
+      <div class="modal-footer">
+        <a href='/cart' class="btn btn-default goCart">Checkout</a>
+        <button class="btn btn-default closeModal" style="margin-top: 0px;">OK</a>
+      </div>
+    </div>
+   </div>
+ </div>       
+
+<script type="text/javascript">
+   $('.closeModal').on('click',function(e){
+      e.preventDefault();
+      $('.popUpModal').fadeOut(0);          
+  });
+</script>

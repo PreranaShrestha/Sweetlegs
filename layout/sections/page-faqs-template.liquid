@@ -1,0 +1,95 @@
+<div id="primary" class="content-area">
+  {%- include 'page-header' -%}
+  <div id="content" class="site-content">
+    <article class="page">
+      <div class="row">
+        <div class="large-8 large-centered columns">
+          <div class="entry-content">
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'heading' -%}
+                  {%- if block.settings.content != blank -%}
+                  <h2 class="shortcode_title">{{ block.settings.content }}</h2>
+                  {%- endif -%}
+                {%- when 'text' -%}
+                  {%- if block.settings.content != blank -%}
+                  <div class="shortcode_text">{{ block.settings.content }}</div>
+                  {%- endif -%}
+                {%- when 'faq' -%}
+            <div class="toggle_simple">
+              {%- if block.settings.question != blank -%}
+              <div class="toggle_title">
+                <h4>{{ block.settings.question }}</h4><i class="toggle_icon"></i>
+              </div>
+              {%- endif -%}
+              
+              {%- if block.settings.answer != blank -%}
+              <div class="toggle_content">
+                {{ block.settings.answer }}
+              </div>
+              {%- endif -%}
+            </div>
+                {%- when 'line' -%}
+                  <div class="sep_line_holder"><span class="sep_line"></span></div>
+              {%- endcase -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "FAQs page",
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Heading",
+        "settings": [
+          {
+            "type": "text",
+            "id": "content",
+            "label": "Content",
+            "label": "Your heading"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "html",
+            "id": "content",
+            "label": "Content",
+            "label": "Your text"
+          }
+        ]
+      },
+      {
+        "type": "faq",
+        "name": "FAQ",
+        "settings": [
+          {
+            "type": "text",
+            "id": "question",
+            "label": "Question",
+            "label": "Your question"
+          },
+          {
+            "type": "html",
+            "id": "answer",
+            "label": "Answer",
+            "label": "Your answer"
+          }
+        ]
+      },
+      {
+        "type": "line",
+        "name": "Line"
+      }
+    ]
+  }
+{% endschema %}

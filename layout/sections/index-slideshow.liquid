@@ -1,0 +1,558 @@
+<div data-section-id="{{ section.id }}" data-section-type="slideshow-section">
+
+  {%- if section.blocks.size > 0 -%}
+  <div class="slideshow-wrapper{% if section.settings.slideshow_spinner != '' %} loading{% endif %} {{ section.settings.text_style }}">
+    <div class="slideshow slideshow--{{ section.settings.slideshow_height }}" id="Slideshow-{{ section.id }}" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}">
+      {%- for block in section.blocks -%}
+      {%- assign is_background_video = false -%}
+      {%- if block.type == 'video' -%}
+      {%- if block.settings.video_type == 'background' or block.settings.video_type =='background-chrome' -%}
+      {%- assign is_background_video = true -%}
+      {%- endif -%}
+      {%- endif -%}
+
+      <div class="tilter slideshow__slide slideshow__slide--{{ block.id }}{% if is_background_video %} slideshow__slide--background-video{% endif %}" {{ block.shopify_attributes }}>
+        {%- if block.settings.link != blank -%}
+        <a href="{{ block.settings.link }}" class="slideshow__link">
+          {%- endif -%}
+
+          <div class="tilter__figure"{% if block.settings.background != blank %} style="background-color:{{ block.settings.background }};"{% endif %}>
+
+            {%- if block.type == 'video' -%}
+            {%- if block.settings.video_id != blank -%}
+            <div class="video-loader"></div>
+            {%- endif -%}
+            {%- unless block.settings.video_type == 'background' -%}
+            <button type="button" class="text-link slideshow__video-control slideshow__video-control--close" data-controls="SlideshowVideo-{{ block.id }}">
+              <span class="icon__fallback-text">{{ 'sections.slideshow.close_video' | t }}</span>
+            </button>
+            {%- endunless -%}
+            {%- if block.settings.video_id != blank -%}
+            <div id="SlideshowVideo-{{ block.id }}" class="slideshow__video {% if is_background_video %}slideshow__video--background{% endif %} slideshow__video--{{ block.settings.video_type }}"
+                 data-id="{{- block.settings.video_id -}}"
+                 data-type="{{- block.settings.video_type -}}"
+                 data-slideshow="Slideshow-{{- section.id -}}"></div>
+            {%- endif -%}
+            {%- endif -%}
+
+            <div class="tilter__deco--lines slideshow__image"{% if block.settings.image %} style="background-image:url('{{ block.settings.image | img_url: 'master' }}');background-position:{{ block.settings.alignment }};"{% endif %}>
+              {%- if section.settings.slideshow_height == "auto" -%}
+              <img class="slideshow__img" src="{{ block.settings.image | img_url: 'master' }}" alt="" />
+              {%- endif -%}
+              {%- if block.settings.image == blank -%}
+              <div class="placeholder-background">
+                {%- capture current -%}{% cycle 1, 2 %}{%- endcapture -%}
+                {{- 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' -}}
+              </div>
+              {%- endif -%}
+              
+              <div class="tilter__caption slideshow__text-wrap{% if block.settings.title != blank or block.settings.subheading != blank %} slideshow__overlay{% endif %}">
+                {%- assign my_font = section.settings.text_font -%}
+                {%- assign my_font_bk = section.settings.text_font | append:'_bk' -%}
+                {%- assign self_font = "'" | append: settings[my_font] | append: "', " | append: settings[my_font_bk] -%}
+                <div class="slideshow__text-content {{ block.settings.alignment_text }}" style="font-family:{{ self_font }};{% if block.settings.color != blank %}color:{{ block.settings.color }};{% endif %}">
+                  {%- unless block.settings.title == blank -%}
+                  <h2 class="mega-title slideshow__title mega-title--{{ block.settings.title_size }}{% if settings.link != blank %} slideshow__title--has-link{% endif %}">
+                    {{- block.settings.title -}}
+                    {%- if block.settings.title_shadow == '1' -%}
+                    <div class="shadow">{{- block.settings.title -}}</div>
+                    {%- endif -%}
+                  </h2>
+                  {%- endunless -%}
+                  {%- unless block.settings.subheading == blank -%}
+                  <div class="mega-subtitle slideshow__subtitle mega-subtitle--{{ block.settings.subheading_size }}">
+                    {{- block.settings.subheading -}}
+                    {%- if block.settings.subheading_shadow == '1' -%}
+                    <div class="shadow">{{- block.settings.subheading -}}</div>
+                    {%- endif -%}
+                  </div>
+                  {%- endunless -%}
+                  {%- if block.type == 'video' -%}
+                  {%- unless block.settings.video_type == 'background' -%}
+                  <div class="slideshow__video-control--play-wrapper{% if block.settings.title != blank or block.settings.subheading != blank %} slideshow__video-control--play-wrapper--push{% endif %}">
+                    <button type="button" class="text-link slideshow__video-control slideshow__video-control--play" data-controls="SlideshowVideo-{{ block.id }}">
+                      <span class="icon__fallback-text">{{ 'sections.slideshow.play_video' | t }}</span>
+                    </button>
+                  </div>
+                  {%- endunless -%}
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {%- if block.settings.link != blank -%}
+        </a>
+        {%- endif -%}
+      </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.slideshow_spinner != '' -%}
+      <div class="tp-loader spinner{{ section.settings.slideshow_spinner }}"><div class="dot1"></div><div class="dot2"></div><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
+    {%- endif -%}
+  </div>
+  {%- endif -%}
+
+  {%- if section.blocks.size == 0 -%}
+  <div class="placeholder-noblocks">
+    {{- 'homepage.onboarding.no_content' | t -}}
+  </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Slideshow",
+    "class": "index-section index-section--flush",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "autoplay",
+        "label": "Auto-rotate slides",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "autoplay_speed",
+        "label": "Change slides every",
+        "options": [
+          { "value": "5000", "label": "5 seconds" },
+          { "value": "6000", "label": "6 seconds" },
+          { "value": "7000", "label": "7 seconds" },
+          { "value": "8000", "label": "8 seconds" },
+          { "value": "9000", "label": "9 seconds" },
+          { "value": "10000", "label": "10 seconds" }
+        ],
+        "default": "7000"
+      },
+      {
+        "type": "select",
+        "id": "slideshow_height",
+        "label": "Section height",
+        "default": "window",
+        "options": [
+          {
+            "label": "Small",
+            "value": "small"
+          },
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          },
+          {
+            "label": "Window",
+            "value": "window"
+          },
+          {
+            "label": "Auto",
+            "value": "auto"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "text_font",
+        "label": "Text Font",
+        "info": "Please go to Typography on General settings tab",
+        "options": [
+          {
+            "label": "General Font",
+            "value": "genera_font"
+          },
+          {
+            "label": "Heading Font",
+            "value": "heading_font"
+          },
+          {
+            "label": "Header Font",
+            "value": "header_font"
+          },
+          {
+            "label": "Nav Font",
+            "value": "nav_font"
+          },
+          {
+            "label": "Special Font",
+            "value": "special_font"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "text_style",
+        "label": "Text Style",
+        "options": [
+          {
+            "label": "Default",
+            "value": "style_1"
+          },
+          {
+            "label": "Style 2",
+            "value": "style_2"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slideshow_spinner",
+        "label": "Spinner",
+        "default": "3",
+        "options": [
+          {
+            "label": "Off",
+            "value": ""
+          },
+          {
+            "label": "0",
+            "value": "0"
+          },
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          },
+          {
+            "label": "3",
+            "value": "3"
+          },
+          {
+            "label": "4",
+            "value": "4"
+          },
+          {
+            "label": "5",
+            "value": "5"
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image slide",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Image alignment",
+            "default": "top",
+            "options": [
+              {
+                "value": "top",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Middle"
+              },
+              {
+                "value": "bottom",
+                "label": "Bottom"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "alignment_text",
+            "label": "Text alignment",
+            "default": "bottom",
+            "options": [
+              {
+                "value": "top",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Middle"
+              },
+              {
+                "value": "bottom",
+                "label": "Bottom"
+              }
+            ]
+          },
+          {
+            "type": "html",
+            "id": "title",
+            "label": "Heading",
+            "default": "Image slide"
+          },
+          {
+            "type": "select",
+            "id": "title_shadow",
+            "label": "Heading shadow",
+            "options": [
+              {
+                "label": "No",
+                "value": ""
+              },
+              {
+                "label": "Yes",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "title_size",
+            "label": "Heading size",
+            "default": "large",
+            "options": [
+              {
+                "label": "Small",
+                "value": "small"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "Large",
+                "value": "large"
+              }
+            ]
+          },
+          {
+            "type": "html",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "Tell your brand's story through video and images"
+          },
+          {
+            "type": "select",
+            "id": "subheading_shadow",
+            "label": "Subheading shadow",
+            "options": [
+              {
+                "label": "No",
+                "value": ""
+              },
+              {
+                "label": "Yes",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "subheading_size",
+            "label": "Subheading size",
+            "default": "small",
+            "options": [
+              {
+                "label": "Small",
+                "value": "small"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "Large",
+                "value": "large"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Slide link"
+          },
+          {
+            "type": "color",
+            "id": "background",
+            "label": "Background Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Text Color",
+            "default": "#ffffff"
+          }
+        ]
+      },
+      {
+        "type": "video",
+        "name": "Video slide",
+        "settings": [
+          {
+            "type": "text",
+            "id": "video_id",
+            "label": "YouTube video ID",
+            "default": "_9VUPq3SxOc",
+            "info": "[Find your YouTube video ID](https://docs.joeworkman.net/rapidweaver/stacks/youtube/video-id)."
+          },
+          {
+            "type": "select",
+            "id": "video_type",
+            "label": "Style",
+            "options": [
+              {
+                "value": "chrome",
+                "label": "Image with play button"
+              },
+              {
+                "value": "background-chrome",
+                "label": "Background video with play button"
+              },
+              {
+                "value": "background",
+                "label": "Background video"
+              }
+            ]
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "Fallback when autoplaying video is not supported on mobile devices"
+          },
+          {
+            "type": "select",
+            "id": "alignment_text",
+            "label": "Text alignment",
+            "default": "bottom",
+            "options": [
+              {
+                "value": "top",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Middle"
+              },
+              {
+                "value": "bottom",
+                "label": "Bottom"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Image slide"
+          },
+          {
+            "type": "select",
+            "id": "title_shadow",
+            "label": "Heading shadow",
+            "options": [
+              {
+                "label": "No",
+                "value": ""
+              },
+              {
+                "label": "Yes",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "title_size",
+            "label": "Heading size",
+            "default": "large",
+            "options": [
+              {
+                "label": "Small",
+                "value": "small"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "Large",
+                "value": "large"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "Tell your brand's story through video and images"
+          },
+          {
+            "type": "select",
+            "id": "subheading_shadow",
+            "label": "Subheading shadow",
+            "options": [
+              {
+                "label": "No",
+                "value": ""
+              },
+              {
+                "label": "Yes",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "subheading_size",
+            "label": "Subheading size",
+            "default": "small",
+            "options": [
+              {
+                "label": "Small",
+                "value": "small"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "Large",
+                "value": "large"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "background",
+            "label": "Background Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Text Color",
+            "default": "#ffffff"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Slideshow",
+      "category": "Image",
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": "5000"
+      },
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }]
+  }
+{% endschema %}

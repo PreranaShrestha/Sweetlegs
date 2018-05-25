@@ -1,0 +1,86 @@
+<header id="masthead" class="header-v1 site-header animate-search{% if header_sticky == true %} sticky{% endif %}" data-my-sticky="{{ header_sticky }}" data-my-sticky-scroll="{{ header_sticky_scroll }}" data-my-sticky-mobile="{{ header_sticky_mobile }}">
+  <div class="header-wrapper row">
+    <div class="nav">
+      <div class="header-nav">
+        <div data-toggle="offcanvas" data-target="menu-offcanvas" data-src="left" class="menu-trigger menu_trigger_{{ section.settings.menu_trigger }}">
+          <div><span></span></div>
+          {%- if section.settings.menu_trigger == '1' -%}
+          <span class="menu-title">{{ 'header.other.menu' | t | escape }}</span>
+          {%- endif -%}
+        </div>
+        {%- include 'offcanvas-menu' -%}
+      </div>
+      {%- if section.settings.header_contact != '' -%}
+      <div class="header-contact">
+        {%- if section.settings.header_contact_icon != '' -%}
+        <i class="header-contact-icon"></i>
+        {%- endif -%}
+        <div class="header-contact-desc">
+          {%- if section.settings.header_contact_subtitle != '' -%}
+          <span>{{ section.settings.header_contact_subtitle | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.header_contact_title != '' -%}
+          <h3>{{ section.settings.header_contact_title | escape }}</h3>
+          {%- endif -%}
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+    <div class="site-branding">
+      {%- comment -%}
+      Use the uploaded logo from theme settings if enabled.
+      Site name gets precedence with H1 tag on homepage, div on other pages.
+      {%- endcomment -%}
+      <{% if template.name == 'index' %}h1{% else %}div{% endif %} class="site-logo" itemscope itemtype="http://schema.org/Organization">
+       
+        
+        
+        
+        <a itemprop="url" href="{{ shop.url }}" title="{{ shop.name | escape }}" rel="home">
+          {%- capture image_size -%}x{{ settings.main_logo_height }}{%- endcapture -%}
+
+          <img src="{{ 'logo-svg.svg' | asset_url }}" width="{{section.settings.logo_max_width}}" alt="{{ shop.name }}" itemprop="logo"> 
+          
+        </a>
+        </{% if template.name == 'index' %}h1{% else %}div{% endif %}>
+    </div>
+    
+    
+    
+    
+    <div class="tools">
+      <ul>
+        {%- if section.settings.header_search != '' -%}
+        <li class="search-button">
+          <a href="/search" data-toggle="offcanvas" data-target="search-offcanvas" data-src="right" class="cd-search-trigger cd-text-replace">
+            <i class="search-button-icon"></i>
+          </a>
+          {%- include 'offcanvas-search' -%}
+        </li>
+        {%- endif -%}
+        {%- if settings.product_wishlist != '' -%}
+        <li class="wishlist-button">
+          <a href="{{ pages[settings.product_wishlist].url }}">
+            <i class="wishlist-button-icon"></i>
+            <span class="wishlist_items_number counter_number animated rubberBand">{% if customer %}{{ customer.metafields.wishlist | size | default:0 }}{% else %}0{% endif %}</span>
+          </a>
+        </li>
+        {%- endif -%}
+        {%- if settings.catalog_mode == '' -%}
+        <li class="cart-button">
+          <a href="/cart" data-toggle="offcanvas" data-target="cart-offcanvas" data-src="right">
+            <div class="cart-desc">
+              <span class="cart_total">
+                <span class="amount"><span class="money">{{ cart.total_price | money }}</span></span>
+              </span>
+              {{ 'header.cart.title' | t | escape }}
+            </div>
+            <i class="cart-button-icon"></i>
+            <span class="cart_items_number counter_number animated rubberBand">{{ cart.item_count }}</span>
+          </a>
+        </li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+</header>

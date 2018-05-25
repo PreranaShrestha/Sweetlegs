@@ -1,0 +1,74 @@
+{%- assign _label = '' -%}
+{%- assign _mixed_text = link.title | strip -%}
+{%- assign _f_letter = _mixed_text | slice: 0 -%}
+{%- assign _l_letter = _mixed_text | slice: -1, 1 -%}
+{%- if _f_letter != '{' -%}
+{%- assign _mixed_text = _mixed_text | prepend: '{ }' -%}
+{%- endif -%}
+{%- if _l_letter != '}' -%}
+{%- assign _mixed_text = _mixed_text | append: '{ }' -%}
+{%- endif -%}
+{%- assign _texts = _mixed_text | split: '}' -%}
+{%- assign _label = _texts[0] | remove: '{' | strip -%}
+{%- assign _texts = _texts[1] | split: '{' -%}
+{%- assign _name = _texts[0] | strip -%}
+{%- assign _style = _texts[1] | strip -%}
+{%- assign _main_style = "" -%}
+{%- assign _second_style = "" -%}
+{%- if _style != blank -%}
+{%- assign _a_styles = _style | split: ";" -%}
+{%- for _a_style in _a_styles -%}
+{%- assign _a_style = _a_style | trip -%}
+{%- if _a_style != blank -%}
+{%- assign _a_style_tmp = _a_style | split: ":" -%}
+{%- assign _a_style_tmp_check = _a_style_tmp[0] | strip -%}
+{%- if _a_style_tmp_check == "background" or _a_style_tmp_check == "background-color" -%}
+{%- assign _main_style = _a_style | append: ";color:" | append : _a_style_tmp[1] -%}
+{%- endif -%}
+{%- if _a_style_tmp == "color"-%}
+{%- assign _second_style = _a_style -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- assign submenu = _name | handleize -%}
+{%- assign _active  = false-%}
+{%- if link.active -%}
+{%- assign _active  = true-%}
+{%- endif -%}
+<li class="menu-item{% if link.active %} current-menu-item{% endif %}">
+  <a href="{{ link.url }}"{% if block.settings.menu_color != blank %} style="color:{{ block.settings.menu_color }}"{% endif %}>
+    <span><small>{{ _name }}</small></span>
+    {%- if _label != blank -%}
+    <span class="menu-label menu-label-{{ _label | handleize  }}" style="{% if _main_style != blank %}{{ _main_style }}{% endif %}">
+      <span style="{% if _second_style != blank %}{{ _second_style }}{% endif %}" >{{ _label }}</span>
+    </span>
+    {%- endif -%}
+  </a>
+  
+  {%- assign three_level_nav = false -%}
+  {%- assign child_list_handle = link.title | handleize -%}
+
+  {%- if linklists[child_list_handle].links != blank -%}
+    {%- for childlink in linklists[child_list_handle].links -%}
+      {%- assign grand_child_list_handle = childlink.title | handleize -%}
+      {%- if linklists[grand_child_list_handle].links != blank -%}
+        {%- assign three_level_nav = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  
+  {%- if linklists[child_list_handle].links != blank -%}
+  <ul class="sub-menu{% if block.settings.bordered %} bordered{% endif %}"{% if block.settings.submenu_bg_color != blank %} style="background-color:{{ block.settings.submenu_bg_color }}"{% endif %}>
+    {%- for link in linklists[child_list_handle].links -%}
+      {%- include 'navigation-link' -%}
+    {%- endfor -%}
+  </ul>
+  {%- elsif linklists[submenu].links.size > 0 -%}
+  <ul class="sub-menu{% if block.settings.bordered %} bordered{% endif %}"{% if block.settings.submenu_bg_color != blank %} style="background-color:{{ block.settings.submenu_bg_color }}"{% endif %}>
+    {%- for link in linklists[submenu].links -%}
+      {%- include 'navigation-link' -%}
+    {%- endfor -%}
+  </ul>
+  {%- endif -%}
+</li>

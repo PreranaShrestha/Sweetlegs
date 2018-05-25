@@ -1,0 +1,184 @@
+<!-- Implemented by westmountsolutions.com 2018-04-04 by IN -->
+<!-- creating variables needed -->
+{% assign count = 0 %}
+{% assign newPrice = 0 %}
+{% assign flagPrice = 0 %}
+<!-- validating customer has distributor tag -->
+{% if customer.tags contains "distributor" or customer.tags contains "Distributor" %}
+  <!-- iterating all items in cart -->
+    {% for item in cart.items %}
+    <!-- flag variable helps to count items in cart -->
+      {% assign flag = 0 %}
+
+<!-- iterating all tags in each product on cart -->
+      {% for prod_type in item.product.type %}
+    <!-- checking if tag is equal to one of the tags we need -->
+        {% if prod_type == "SweetLegs Petite"  or prod_type == "SweetLegs Kids"  or prod_type == "SweetLegs Plus"  or prod_type == "SweetLegs One Size" %}
+      <!-- checking flag equal to 0, avoids 2 or more increments in the same product -->
+            {% if flag == 0 %}
+        <!-- flag now is equal to 1 -->
+        {% assign flag = 1 %}    
+        <!-- adding number of items to count, count is variable for all items -->
+                {% assign count = count | plus: item.quantity %}
+            {% else %}
+                {% assign flag = 0 %}
+            {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+  <!-- validating number of items in cart -->
+  {% if count >= 25 and count < 50 %}
+    <!-- iterate tags to assign to each product its discount -->
+    {% for tag in item.product.tags %}
+
+      <!-- case for tags and assigning the discount -->
+      {% case tag %}
+              {% when "c1" %}
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.6 %}          
+              {% when "c2" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.7 %}          
+              {% when "c3" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.7 %}          
+              {% when "c4" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.84 %}           
+              {% when "SweetLegs One Size" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}
+        {% when "SweetLegs Plus" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}
+        {% when "SweetLegs Kids" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}       
+              {% when "SweetLegs Petite" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}
+              {% else %}
+          {% if flagPrice == 0 %}
+                    {% assign newPrice = item.product.price %}
+          {% endif %}
+            {% endcase %}
+
+    {% endfor %}
+    
+  {% elsif count > 49 and count < 1000 %}
+
+    {% for tag in item.product.tags %}
+
+      {% case tag %}
+              {% when "c1" %}
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.6 %}          
+              {% when "c2" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.7 %}          
+              {% when "c3" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.77 %}         
+              {% when "c4" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.84 %}           
+              {% when "SweetLegs One Size" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.5 %}
+          {% endif %}
+        {% when "SweetLegs Plus" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.5 %}
+          {% endif %}
+        {% when "SweetLegs Kids" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.5 %}
+          {% endif %}       
+              {% when "SweetLegs Petite" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.5 %}
+          {% endif %}
+              {% else %}
+          {% if flagPrice == 0 %}
+                    {% assign newPrice = item.product.price %}
+          {% endif %}
+            {% endcase %}
+
+    {% endfor %}
+
+  {% elsif count > 999 %}
+
+    {% for tag in item.product.tags %}
+
+      {% case tag %}
+              {% when "c1" %}
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.6 %}          
+              {% when "c2" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.7 %}          
+              {% when "c3" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.77 %}         
+              {% when "c4" %}         
+                      {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.84 %}           
+              {% when "SweetLegs One Size" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}
+        {% when "SweetLegs Plus" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}
+        {% when "SweetLegs Kids" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}       
+              {% when "SweetLegs Petite" %}
+          {% if flagPrice == 0 %}
+            {% assign flagPrice = 1 %}
+                      {% assign newPrice = item.product.price | times: 0.4 %}
+          {% endif %}
+              {% else %}
+          {% if flagPrice == 0 %}
+                    {% assign newPrice = item.product.price %}
+          {% endif %}
+            {% endcase %}
+
+    {% endfor %}
+
+  {% else %}
+    <!-- assigning price when items 25-  -->
+    {% assign newPrice = item.product.price %}         
+  {% endif %}
+  
+  
+{% else %}
+  <!-- assigning price when customer is not distributor  -->
+  {% assign newPrice = item.product.price %}
+{% endif %}
+
+{% if newPrice == item.product.price %}
+      {{ newPrice | money }}
+  {% elsif newPrice != 0 %}
+    {% assign newPrice = item.product.price | minus: newPrice %}
+      <span class="price-old">{{ item.product.price | money }}{{ " " }}</span>{{ newPrice | money }}{{ " " }}
+  {% else %}
+    {{ newPrice | money }}
+{%endif%}

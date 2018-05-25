@@ -1,0 +1,9 @@
+{%- capture my_src -%}{% include 'shortcode-render' render:'src' %}{%- endcapture -%}
+{%- capture my_alt -%}{% include 'shortcode-render' render:'alt' %}{%- endcapture -%}
+{%- if my_src != blank -%}
+<aside class="widget widget_text">
+  <div class="textwidget">
+    <img src="{{ my_src | escape }}" alt="{{ my_alt | escape }}" />
+  </div>
+</aside>
+{%- endif -%}

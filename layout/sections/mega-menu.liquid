@@ -1,0 +1,305 @@
+{%- if section.settings.megamenu_enable and section.blocks.size > 0 -%}
+<div id="menu-primary-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="mega-menu">
+  <ul class="list-item">
+  {%- for block in section.blocks limit: section.blocks.size -%}
+    {%- assign _p_label = '' -%}
+    {%- assign _p_mixed_text = block.settings.menu_text | strip -%}
+    {%- assign _p_f_letter = _p_mixed_text | slice: 0 -%}
+    {%- assign _p_l_letter = _p_mixed_text | slice: -1, 1 -%}
+    {%- if _p_f_letter != '{' -%}
+    {%- assign _p_mixed_text = _p_mixed_text | prepend: '{ }' -%}
+    {%- endif -%}
+    {%- if _p_l_letter != '}' -%}
+    {%- assign _p_mixed_text = _p_mixed_text | append: '{ }' -%}
+    {%- endif -%}
+    {%- assign _p_texts = _p_mixed_text | split: '}' -%}
+    {%- assign _p_label = _p_texts[0] | remove: '{' | strip -%}
+    {%- assign _p_texts = _p_texts[1] | split: '{' -%}
+    {%- assign _p_name = _p_texts[0] | strip -%}
+    {%- assign _p_styles = _p_texts[1] | strip -%}
+    {%- assign _main_style = "" -%}
+    {%- assign _second_style = "" -%}
+    {%- if _p_styles != blank -%}
+    {%- assign _a_styles = _p_styles | split: ";" -%}
+    {%- for _a_style in _a_styles -%}
+    {%- assign _a_style = _a_style | trip -%}
+    {%- if _a_style != blank -%}
+    {%- assign _a_style_tmp = _a_style | split: ":" -%}
+    {%- assign _a_style_tmp_check = _a_style_tmp[0] | strip -%}
+    {%- if _a_style_tmp_check == "background" or _a_style_tmp_check == "background-color" -%}
+    {%- assign _main_style = _a_style | append: ";color:" | append : _a_style_tmp[1] -%}
+    {%- endif -%}
+    {%- if _a_style_tmp_check == "color"-%}
+    {%- assign _second_style = _a_style -%}
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+    {%- endif -%}
+    {%- if _main_style == blank -%}
+    {%- assign _main_style ="color:transparent" -%}
+    {%- endif -%}
+    <li class="menu-item{% if block.type == "menu_mega_item" %} is-mega-menu{% endif %}">
+      <a href="{{block.settings.menu_link}}">
+        <span><small>{{- _p_name -}}</small></span>
+        {%- if _p_label != blank -%}
+        <span class="menu-label menu-label-{{- _p_label | handleize  -}}" style="{%- if _main_style != blank -%}{{- _main_style -}}{%- endif -%}">
+          <span style="{%- if _second_style != blank -%}{{- _second_style -}}{%- endif -%}" >{{- _p_label -}}</span>
+        </span>
+        {%- endif -%}
+      </a>
+      {%- if block.settings.linklist != blank -%}
+      {%- if block.type == "menu_mega_item" -%}
+      <div class="sub-menu" style="{% if block.settings.submenu_bg_image != blank %}background-image:url({{ block.settings.submenu_bg_image | img_url:"master" }});{% endif %}{% if block.settings.submenu_bg_color != blank %}background-color:{{ block.settings.submenu_bg_color }};{% endif %}width:{{ block.settings.submenu_width }};">
+        <div class="mega-menu-content">
+          <div class="row">
+            {%- for link in linklists[block.settings.linklist].links -%}
+
+            {%- assign _label = '' -%}
+            {%- assign _mixed_text = link.title | strip -%}
+            {%- assign _f_letter = _mixed_text | slice: 0 -%}
+            {%- assign _l_letter = _mixed_text | slice: -1, 1 -%}
+            {%- if _f_letter != '{' -%}
+            {%- assign _mixed_text = _mixed_text | prepend: '{ }' -%}
+            {%- endif -%}
+            {%- if _l_letter != '}' -%}
+            {%- assign _mixed_text = _mixed_text | append: '{ }' -%}
+            {%- endif -%}
+            {%- assign _texts = _mixed_text | split: '}' -%}
+            {%- assign _label = _texts[0] | remove: '{' | strip -%}
+            {%- assign _texts = _texts[1] | split: '{' -%}
+            {%- assign _name = _texts[0] | strip -%}
+            {%- assign _style = _texts[1] | strip -%}
+            {%- assign _main_style = "" -%}
+            {%- assign _second_style = "" -%}
+            {%- if _style != blank -%}
+            {%- assign _a_styles = _style | split: ";" -%}
+            {%- for _a_style in _a_styles -%}
+            {%- assign _a_style = _a_style | trip -%}
+            {%- if _a_style != blank -%}
+            {%- assign _a_style_tmp = _a_style | split: ":" -%}
+            {%- assign _a_style_tmp_check = _a_style_tmp[0] | strip -%}
+            {%- if _a_style_tmp_check == "background" or _a_style_tmp_check == "background-color" -%}
+            {%- assign _main_style = _a_style | append: ";color:" | append : _a_style_tmp[1] -%}
+            {%- endif -%}
+            {%- if _a_style_tmp_check == "color"-%}
+            {%- assign _second_style = _a_style -%}
+            {%- endif -%}
+            {%- endif -%}
+            {%- endfor -%}
+            {%- endif -%}
+            {%- assign submenu = _name | handleize -%}
+            {%- assign _active  = false-%}
+            {%- if link.active -%}
+            {%- assign _active  = true-%}
+            {%- endif -%}
+            
+            <div class="columns large-{{block.settings.colum_width}}">
+              <div class="menu-item{% if _active %} current-menu-item{% endif %}">
+                <a href="{{ link.url }}"{% if linklists[submenu].links.size > 0 %} class="dropdown-toggle"{% endif %}>
+                  <span><small>{{- _name -}}</small></span>
+                  {%- if _label != blank -%}
+                  <span class="menu-label menu-label-{{- _label | handleize  -}}" style="{%- if _main_style != blank -%}{{- _main_style -}}{%- endif -%}">
+                    <span style="{%- if _second_style != blank -%}{{- _second_style -}}{%- endif -%}" >{{- _label -}}</span>
+                  </span>
+                  {%- endif -%}
+                </a>
+                {%- if linklists[submenu].links.size > 0 -%}
+                <div class="mega-menu-submenu">
+                  <ul class="sub-menu check">
+                    {%- for sublink in linklists[submenu].links -%}
+                    
+                    {%- assign _sub_label = '' -%}
+                    {%- assign _sub_mixed_text = sublink.title | strip -%}
+                    {%- assign _sub_f_letter = _sub_mixed_text | slice: 0 -%}
+                    {%- assign _sub_l_letter = _sub_mixed_text | slice: -1, 1 -%}
+                    {%- if _sub_f_letter != '{' -%}
+                    {%- assign _sub_mixed_text = _sub_mixed_text | prepend: '{ }' -%}
+                    {%- endif -%}
+                    {%- if _sub_l_letter != '}' -%}
+                    {%- assign _sub_mixed_text = _sub_mixed_text | append: '{ }' -%}
+                    {%- endif -%}
+                    {%- assign _sub_texts = _sub_mixed_text | split: '}' -%}
+                    {%- assign _sub_label = _sub_texts[0] | remove: '{' | strip -%}
+                    {%- assign _sub_texts = _sub_texts[1] | split: '{' -%}
+                    {%- assign _sub_name = _sub_texts[0] | strip -%}
+                    {%- assign _sub_style = _sub_texts[1] | strip -%}
+                    {%- assign _main_style = "" -%}
+                    {%- assign _second_style = "" -%}
+                    {%- if _sub_style != blank -%}
+                    {%- assign _a_styles = _sub_style | split: ";" -%}
+                    {%- for _a_style in _a_styles -%}
+                    {%- assign _a_style = _a_style | trip -%}
+                    {%- if _a_style != blank -%}
+                    {%- assign _a_style_tmp = _a_style | split: ":" -%}
+                    {%- assign _a_style_tmp_check = _a_style_tmp[0] | strip -%}
+                    {%- if _a_style_tmp_check == "background" or _a_style_tmp_check == "background-color" -%}
+                    {%- assign _main_style = _a_style | append: ";color:" | append : _a_style_tmp[1] -%}
+                    {%- endif -%}
+                    {%- if _a_style_tmp_check == "color"-%}
+                    {%- assign _second_style = _a_style -%}
+                    {%- endif -%}
+                    {%- endif -%}
+                    {%- endfor -%}
+                    {%- endif -%}
+                    {%- assign submenu = _sub_name | handleize -%}
+                    {%- assign _subactive  = false-%}
+                    {%- if sublink.active -%}
+                    {%- assign _subactive  = true-%}
+                    {%- endif -%}
+                    <li class="menu-item{% if _subactive %} current-menu-item{% endif %}">
+                      <a href="{{ sublink.url }}">
+                        <span><small>{{- _sub_name -}}</small></span>
+                        {%- if _sub_label != blank -%}
+                        <span class="menu-label menu-label-{{- _sub_label | handleize  -}}" style="{%- if _main_style != blank -%}{{- _main_style -}}{%- endif -%}">
+                          <span style="{%- if _second_style != blank -%}{{- _second_style -}}{%- endif -%}" >{{- _sub_label -}}</span>
+                        </span>
+                        {%- endif -%}
+                      </a>
+                    </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+                {%- endif -%}
+              </div>
+            </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+      {%- else -%}
+      <ul class="sub-menu" style="{% if block.settings.submenu_bg_color != blank %}background-color:{{ block.settings.submenu_bg_color }};{% endif %}width:{{ block.settings.submenu_width }};">
+        {%- for link in linklists[block.settings.linklist].links -%}
+          {%- include 'navigation-link' -%}
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+  </ul>
+</div>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Mega Menu",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "megamenu_enable",
+        "label": "Enable"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "menu_item",
+        "name": "Dropdown menu item",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General:"
+          },
+          {
+            "type": "text",
+            "id": "menu_text",
+            "label": "Text"
+          },
+          {
+            "type": "text",
+            "id": "menu_link",
+            "label": "URL"
+          },
+          {
+            "type": "text",
+            "id": "submenu_width",
+            "label": "Submenu width",
+            "info": "i.e 250px, 100% ...",
+            "default": "250px"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Choose a linklist"
+          },
+          {
+            "type": "header",
+            "content": "Style:"
+          },
+          {
+            "type": "color",
+            "id": "submenu_bg_color",
+            "label": "Sub-menu background"
+          }
+        ]
+      },
+      {
+        "type": "menu_mega_item",
+        "name": "Mega menu item",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General:"
+          },
+          {
+            "type": "text",
+            "id": "menu_text",
+            "label": "Text"
+          },
+          {
+            "type": "text",
+            "id": "menu_link",
+            "label": "URL"
+          },
+          {
+            "type": "select",
+            "id": "colum_width",
+            "label": "Column width",
+            "options": [{
+                "label": "100%",
+                "value": "12"
+              },
+              {
+                "label": "50%",
+                "value": "6"
+              },
+              {
+                "label": "33%",
+                "value": "4"
+              },
+              {
+                "label": "25%",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "submenu_width",
+            "label": "Submenu width",
+            "info": "i.e 250px, 100% ...",
+            "default": "250px"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Choose a linklist"
+          },
+          {
+            "type": "header",
+            "content": "Style:"
+          },
+          {
+            "type": "color",
+            "id": "submenu_bg_color",
+            "label": "Sub-menu background"
+          },
+          {
+            "type": "image_picker",
+            "id": "submenu_bg_image",
+            "label": "Sub-menu background image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

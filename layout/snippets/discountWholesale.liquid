@@ -1,0 +1,42 @@
+
+{% assign newPrice = variant.price %} 
+
+  {% if product.tags contains 'c1' and discountableItem > 24 %}
+
+    {% assign newPrice = variant.price | times: 0.6 %} 
+  
+    {% elsif product.tags contains 'c2' and discountableItem > 24 %}
+
+    {% assign newPrice = variant.price | times: 0.7 %} 
+  
+    {% elsif product.tags contains 'c3' and discountableItem > 24 %}
+
+    {% assign newPrice = variant.price | times: 0.77 %}
+  
+    {% elsif product.tags contains 'c4' and discountableItem > 24 %}
+
+    {% assign newPrice = variant.price | times: 0.84 %}
+   {% elsif product.tags contains 'SweetLegs One Size' or  product.tags contains "SweetLegs Plus" or product.tags contains "SweetLegs Kids" or product.tags contains "SweetLegs Petite" or product.tags contains 'ID Only Prints' %}
+        {% if discountableItem > 24 and discountableItem < 50 %}
+          {% assign newPrice = variant.price | times: 0.4 %} 
+      
+        {% elsif discountableItem > 49 and discountableItem < 1000 %}
+          {% assign newPrice = variant.price | times: 0.5 %}
+      
+        {% elsif discountableItem > 999 %}
+          {% assign newPrice = variant.price | times: 0.4 %} 
+    
+  {% endif %}
+    
+  {% endif %}
+
+
+
+{% if newPrice == variant.price %}
+      {{ newPrice | money }}
+  {% elsif newPrice != 0 %}
+    {% assign newPrice = variant.price | minus: newPrice %}
+      <span class="price-old">{{ variant.price | money }}{{ " " }}</span>{{ newPrice | money }}{{ " " }}
+  {% else %}
+    {{ newPrice | money }}
+{%endif%}

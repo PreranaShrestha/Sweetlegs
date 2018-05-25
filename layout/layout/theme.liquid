@@ -1,0 +1,278 @@
+<!doctype html>
+
+<!--[if IE 9]> <html class="ie9 no-js" lang="{{ shop.locale }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="{{ shop.locale }}"> <!--<![endif]-->
+<head>
+  {{ '//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' | script_tag }}
+
+	{{ '//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css' | stylesheet_tag }}
+
+	{{ '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js' | script_tag }}
+
+  <meta charset="utf-8" />
+  <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1' /><![endif]-->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  
+  {%- if settings.favicon_image -%}
+    <link rel="shortcut icon" href="{{ settings.favicon_image | img_url: '32x32' }}" type="image/png" />
+  {%- endif -%}
+  {%- if settings.favicon_image_retina -%}
+    <link rel="apple-touch-icon-precomposed" href="{{ settings.favicon_image_retina | img_url: '152x152' }}" type="image/png" />
+  {%- endif -%}
+
+  <!-- {%- capture seo_title -%}
+    {{- page_title -}}
+    {% if current_tags %}
+      {%- assign meta_tags = current_tags | join: ', ' %} &nbsp;&ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &nbsp;&ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- unless page_title contains shop.name -%}
+      &nbsp;&ndash; {{ shop.name }}
+    {%- endunless -%}
+  {%- endcapture -%}
+  <title>{{ seo_title }}</title> -->
+
+  <title>
+    {% if template == 'index' %}
+      {{ shop.name }}
+    {% elsif template contains 'collection' %}
+      SweetLegs {{ collection.title }} | Product categories | {{ shop.name }}
+    {% elsif template contains 'product' %}
+      {{ product.title }} | {{ shop.name }}
+    {% elsif template contains 'page' %}
+      {{ page.title }} | {{ shop.name }}
+    {% else %}
+      {{ page_title }} | {{ shop.name }}
+    {% endif %}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}" />
+  {%- endif -%}
+
+  {%- include 'social-meta-tags' -%}
+  {%- include 'shopify-head' -%}
+  
+  {{ content_for_header }}
+
+  {% assign cad_domain = "https://sweetlegs.ca" %}
+  {% assign usd_domain = "https://sweetlegs.com" %}
+  {% assign current_url = canonical_url | remove: shop.secure_url %} 
+  {% assign current_url_cad = cad_domain | append: current_url %}
+  {% assign current_url_us = usd_domain | append: current_url %}
+  <link rel="alternate" hreflang="en-ca" href="{{current_url_cad}}" />
+  <link rel="alternate" hreflang="en-us" href="{{current_url_us}}" />
+
+
+
+{% comment %} start instabadge section {% endcomment %}
+{{ 'instabadge.css' | asset_url | stylesheet_tag }}
+{% include 'instabadge' %}
+{% comment %} end instabadge section {% endcomment %}
+</head>
+
+{%- assign form_style = settings.form_style | default: 'default' -%}
+<body class="template-{{ template | split: '.' | first }}" data-form-style="{{ form_style }}">
+  {% include 'redirect-bar' %}
+  {% include 'alertMessageLineItem' %}
+  {%- if settings.page_loader == '1' -%}
+  <div id="eva-loader-wrapper">
+    <div class="eva-loader-section">
+      <div class="eva-loader-{{ settings.page_loader_spinner }}"></div>
+    </div>
+  </div>
+  {%- endif -%}
+  
+  {%- section 'header' -%}
+  {%- section 'mega-menu' -%}
+  
+  <div class="offcanvas_container">
+  <input class='customer-tag' value="{{customer.tags}}" type="hidden" />
+    <div class="offcanvas_main_content">
+      <div class="page-wrapper">
+        <main id="main">
+          {{ content_for_layout }}
+        </main>
+        
+        {%- section 'footer' -%}
+      </div>
+    </div>
+    {%- include 'offcanvas' -%}
+  </div>
+  <div class="cd-quick-view"></div>
+  {%- include 'photoswipe' -%}
+  {%- include 'newsletter-popup' -%}
+  {%- include 'notify-products' -%}
+  {%- include 'cookie-popup' -%}
+  {%- include 'facebook-chat' -%}
+  
+  <script>
+    $(document).ready(function(){
+      if(($('.customer-tag').val() == 'distributor' || $('.customer-tag').val() == 'Distributor') &&  $(window).width() < 500){
+        $('#topbar.topbar').css('display','block');
+        //$('.topbar-content.medium-6.columns.text-left').css('display','none');
+        //$('.topbar-menu-container').css('z-index', '999');
+      }
+      if(performance.navigation.type == 2 && "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch){
+         location.reload(true);
+      }
+
+      $('.store-switcher-cad').on('click', function(){
+      	window.top.location.href = 'https://sweetlegs.ca'+window.location.pathname+'/?no-redirect'; 
+      })
+      $('.store-switcher-usd').on('click', function(){
+      	window.top.location.href = 'https://sweetlegs.com'+window.location.pathname+'/?no-redirect'; 
+      })
+      
+      $('.store-switcher-usd').css('font-weight', 'bold');
+      
+      $('.offcanvas_overlay').on('click', function(e){
+        console.log(e);
+        $(this).addClass('offcanvas_close');
+      });
+      $('.input-text.qty.text').change(function(){
+        var $qty = $(this).parent().find('.input-text.qty.text').val();
+        var $id = $(this).parent().find('.input-text.qty.text').data('id');
+        var $url = $(this).parent().find('.input-text.qty.text').data('url');
+        var answer = true;
+        var reload = true;
+        var max = parseInt($(this).attr('max'), 10);
+        var value = parseInt($(this).val(), 10) || 0;
+        function  addToCart(quantity, reload) {  
+            var data = {
+            quantity: quantity,
+            id: $id
+            }
+
+            jQuery.ajax({
+              type: 'post',
+              url: '/cart/change.js',
+              data: data,
+              success: function(d){console.log(d); 
+                                   if(reload) {
+                                     if ($('.prodPlus:hover').length == 0 && $('.prodMinus:hover').length == 0) {
+                                       
+                                         location.reload();
+                                     } else if ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch){
+                                       	setTimeout(function(){location.reload();}, 3000);
+                                     }
+                 
+                                   };
+                                  }, 
+              dataType: 'json'
+            });
+
+          } 
+        if (value > max) { 
+          reload = false;
+          $('.goCart').addClass('hideMe');
+          $('.btn.btn-default.closeModal').removeClass('hideMe');
+		   addToCart(max, reload);
+          $(".modal-body").text(`We do not have that quantity available.`);          
+          $('.popUpModal').fadeIn(); 
+          
+         
+        }   
+        if(parseInt($qty) == 0) {
+      	 var answer = confirm("Are you sure you want to delete the  product?");         
+        }  
+        
+        if(answer == true) {
+            $.ajax({
+            type: 'GET',
+            url: `${$url}`,
+            cache: false,
+            dataType: 'json',
+            success: function(cart) {
+              var tags = cart.product.tags.split(','); 
+              tags.forEach(tag => {
+                if (tag.trim() == 'limit1' && parseInt($qty) > 10) {
+                   $('.goCart').addClass('hideMe');
+                    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                    $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
+                    $('.popUpModal').fadeIn();
+                    var quantity = 10;
+                    reload = false;
+                  addToCart(quantity);
+                } else if (tag.trim() == 'limit2' && parseInt($qty) > 15) {
+                    $('.goCart').addClass('hideMe');
+                    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                    $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
+                    $('.popUpModal').fadeIn();
+                    var quantity = 15;
+                    addToCart(quantity);
+                    reload = false;
+                } else if (tag.trim() == 'limit3' && parseInt($qty) > 20) {
+                    $('.goCart').addClass('hideMe');
+                    $('.btn.btn-default.closeModal').removeClass('hideMe');
+                    $(".modal-body").text("Sorry, you have reached the maximum limit for this product.");      
+                    $('.popUpModal').fadeIn();
+                    var quantity = 20; 
+                    addToCart(quantity);
+                    reload = false;
+                }
+              });
+              if(reload) {
+                addToCart($qty, reload);
+              }        
+            }
+        });
+         
+        } else {
+          if ($('.prodPlus:hover').length == 0 && $('.prodMinus:hover').length == 0) {
+              location.reload();
+          } else if ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch){
+            	setTimeout(function(){location.reload();}, 3000);
+                                       
+                                     }
+        }
+     });
+      
+      $('.prodPlus').on('click',function(){
+        var initialCartValue = parseInt($('.cart_items_number.counter_number.animated.rubberBand').text());
+        var $qty = $(this).parent().find('.input-text.qty.text');
+        var currentVal = parseInt($qty.val());
+		    if (!isNaN(currentVal) && currentVal > 0) {
+          $qty.val(currentVal + 1).trigger('change');
+        }          
+      });
+      $('.prodMinus').on('click',function(){
+        var $qty = $(this).parent().find('.input-text.qty.text');
+        var currentVal = parseInt($qty.val());
+        if (!isNaN(currentVal) && currentVal > 0) {
+            $qty.val(currentVal - 1).trigger('change');
+        }
+      });
+      
+      $('.myaccount-content').find('.shop_table').find('tbody').find('tr').each(function (keyElement, rowElement) {
+        var qtyTD = $(rowElement).find('.order-quantity-outer');
+        var qtyTotal = 0;
+        $(qtyTD).find('.order-quantity').each(function(key, value) {
+          qtyTotal += Number($(value).text());
+          $(value).hide();
+        })
+        $(qtyTD).text(qtyTotal);
+      })
+
+    })
+   
+    $('.bulk-order-button').on('click', function(e) {  
+    
+      $('*').css("cursor", "progress");      
+             
+          window.top.location.href = '/pages/bulk-order-form';
+    });
+  </script>
+
+  <script>
+    //jQuery('a[href^="http"]').not('a[href^="{{ shop.url }}"]').attr('target', '_blank');
+  </script>
+
+    <script async type="text/javascript" id="stamped-script-widget" data-api-key="pubkey-l47V85Gah31UV70ZD6V08K451U1iC2" src="https://cdn-stamped-io.azureedge.net/files/widget.min.js"></script>
+
+ </body>
+</html>

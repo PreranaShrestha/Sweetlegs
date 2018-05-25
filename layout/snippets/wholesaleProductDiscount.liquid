@@ -1,0 +1,56 @@
+{% assign new_price = 0 %}
+{% assign final_price = 0 %} 
+{% assign count = 0 %}
+
+{% if customer.tags contains "distributor" or customer.tags contains "Distributor" %}
+	{% for item in cart.items %}
+		<!-- flag variable helps to count items in cart -->
+		{% assign flag = 0 %}
+
+        <!-- iterating all product types in each product on cart -->
+        {% for prod_type in item.product.type %}
+			<!-- checking if type is equal to one of the tags we need -->
+			{% if prod_type == "SweetLegs Petite"  or prod_type == "SweetLegs Kids"  or prod_type == "SweetLegs Plus"  or prod_type == "SweetLegs One Size" %}
+				<!-- checking flag equal to 0, avoids 2 or more increments in the same product -->
+				{% if flag == 0 %}
+					<!-- flag now is equal to 1 -->
+					{% assign flag = 1 %}    
+					<!-- adding number of items to count, count is variable for all items -->
+					{% assign count = count | plus: item.quantity %}
+				{% else %}
+					{% assign flag = 0 %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+	{% assign discount_percent = 0.0 %}
+	{%- if count >= 25 and count <= 49 -%}
+		{% assign discount_percent = 0.4 %}
+			{%- for my_tag in product.tags -%}
+				{% if my_tag == 'c1' %}
+					{% assign discount_percent = 0.6 %}
+				{% elsif my_tag == 'c2' %}
+					{% assign discount_percent = 0.7 %}
+				{% elsif my_tag == 'c3' %}
+					{% assign discount_percent = 0.77 %}
+				{% elsif my_tag == 'c4' %}
+					{% assign discount_percent = 0.84 %}
+				{% endif %}
+			{%- endfor -%} 
+	{% elsif count >= 50%}
+		{% assign discount_percent = 0.5 %}
+		{%- for my_tag in product.tags -%}
+			{% if my_tag == 'c1' %}
+				{% assign discount_percent = 0.6 %}
+			{% elsif my_tag == 'c2' %}
+				{% assign discount_percent = 0.7 %}
+			{% elsif my_tag == 'c3' %}
+				{% assign discount_percent = 0.77 %}
+			{% elsif my_tag == 'c4' %}
+				{% assign discount_percent = 0.84 %}
+			{% endif %}
+		{%- endfor -%}                           
+	{%- endif -%}
+	{% assign new_price = product.price | times: discount_percent %}
+	{% assign final_price = product.price | minus: new_price %}
+{% endif %}

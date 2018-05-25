@@ -1,0 +1,23 @@
+<nav class="pagination">
+  <ul class="page-numbers">
+    {%- if paginate.previous.is_link -%}
+    <li><a class="previous page-numbers" title="{{ 'general.pagination.previous' | t | escape }}" href="{{ paginate.previous.url }}">←</a></li>
+    {%- endif -%}
+    
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+      <li><a class="page-numbers" href="{{ part.url }}">{{ part.title }}</a></li>
+      {%- else -%}
+        {%- if part.title == '&hellip;' -%}
+        <li><span class="page-numbers current">{{ part.title }}</span></li>
+        {%- else -%}
+        <li><span class="page-numbers current">{{ part.title }}</span></li>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    
+    {%- if paginate.next.is_link -%}
+    <li><a class="next page-numbers" title="{{ 'general.pagination.next' | t | escape }}" href="{{ paginate.next.url }}">→</a></li>
+    {%- endif -%}
+  </ul>
+</nav>

@@ -1,0 +1,15 @@
+<div class="variation-availability">
+	{%- if current_variant -%}
+    	{%- if current_variant.available -%}
+        	{%- if current_variant.inventory_management == "shopify" and current_variant.inventory_policy != "continue" -%}
+            	{%- if current_variant.inventory_quantity > 0 and current_variant.inventory_quantity < 11 -%}
+                	<p>Almost gone, only {{ current_variant.inventory_quantity }} in stock</p>
+                {%- endif -%}
+             {%- else -%}
+             {%- endif -%}
+         {%- else -%}
+       {%- endif -%}
+      {%- else -%}
+      	
+	{%- endif -%}
+</div>

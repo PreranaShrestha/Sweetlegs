@@ -1,0 +1,34 @@
+{% assign badgeToApply = false %}
+{% if template contains 'collection' or template contains 'index' or template contains 'search' %}
+{% assign type = "TYPE_COLLECTION" %}
+{% elsif template contains 'product' %}
+{% capture applyBadgeResult %}
+{% include 'instabadge-badge-snippet' with product %}
+{% endcapture %}
+{% assign badgeToApply = applyBadgeResult  | replace: '\n', '' | replace: '\t', '' | replace: ' ', '' %}
+{% assign type = "TYPE_PRODUCT" %}
+{% else %}
+{% assign type = "TYPE_NONE" %}
+{% endif %}
+
+<script type="text/javascript">
+
+window.instabadge = {}
+window.instabadge.productBadgeMap = { "{{ product.handle }}" : {{ badgeToApply | strip_newlines | downcase }} }
+window.instabadge.type = "{{ type | strip_newlines }}"
+
+if(typeof jQuery=='undefined') {
+  var headTag = document.getElementsByTagName("head")[0];
+  var jqTag = document.createElement('script');
+  jqTag.type = 'text/javascript';
+  jqTag.src = 'https://code.jquery.com/jquery-3.2.1.min.js ';
+  jqTag.onload = function(){
+    if (window.setupInstabadge){
+      window.setupInstabadge();
+    }
+  };
+  headTag.appendChild(jqTag);
+}
+
+</script>
+

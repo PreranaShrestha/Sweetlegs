@@ -1,0 +1,205 @@
+{%- if section.blocks.size > 0 -%}
+  {%- for my_block in section.blocks -%}
+	{%- case my_block.type -%}
+      {%- when 'text' -%}
+		<aside class="widget widget_text" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          {%- if my_block.settings.text != blank -%}
+          <div class="textwidget">{{ my_block.settings.text }}</div>
+          {%- endif -%}
+        </aside>
+      {%- when 'image' -%}
+		<aside class="widget widget_text" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          {%- if my_block.settings.image != blank -%}
+          <div class="textwidget">
+            {%- if my_block.settings.link != blank -%}
+              <a href="{{ my_block.settings.link }}">
+                {{ my_block.settings.image | img_url: 'master' | img_tag: image_alt }}
+              </a>
+            {%- else -%}
+              {{ my_block.settings.image | img_url: 'master' | img_tag: image_alt }}
+            {%- endif -%}
+          </div>
+          {%- endif -%}
+        </aside>
+      {%- when 'video' -%}
+        <aside class="widget widget_text" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          {% if my_block.settings.video_url == blank %}
+            <iframe src="//www.youtube.com/embed/_9VUPq3SxOc?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+          {% else %}
+            {% if my_block.settings.video_url.type == "youtube" %}
+              <iframe src="//www.youtube.com/embed/{{ my_block.settings.video_url.id }}?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+            {% endif %}
+            {% if my_block.settings.video_url.type == "vimeo" %}
+              <iframe src="//player.vimeo.com/video/{{ my_block.settings.video_url.id }}?byline=0&portrait=0&badge=0" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+            {% endif %}
+          {% endif %}
+        </aside>
+      {%- when 'html' -%}
+		<aside class="widget widget_text" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          {%- if my_block.settings.code != blank -%}
+          <div class="textwidget">{{ my_block.settings.code }}</div>
+          {%- endif -%}
+        </aside>
+      {%- when 'collections' -%}
+         <aside class="widget widget_product_categories" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          <ul class="product-categories">
+           <!--  {%- for my_collection in collections -%}
+              {%- unless my_collection.handle == 'all' -%}
+              <li class="cat-item"><a{% if collection.handle == my_collection.handle %} class="active"{% endif %} href="{{ my_collection.url }}">
+              {{ my_collection.title }}</a> 
+              <span class="count">{{ my_collection.all_products_count }}</span>
+
+               </li>
+              {%- endunless -%}
+            {%- endfor -%} -->
+            {% for link in linklists.shop-side-bar.links %}
+              {% unless link.handle == 'marketing-materials' or link.handle == 'fixed-blowout-prints' %}
+                <li class="cat-item">
+                  <a href="{{ link.url }}" {% if collection.handle == link.handle %} class="active"{% endif %}>{{ link.title }}</a>
+                </li>
+              {% else %}
+                {% if customer.tags contains 'distributor' %}
+                  <li class="cat-item">
+                    <a href="{{ link.url }}" {% if collection.handle == link.handle %} class="active"{% endif %}>{{ link.title }}</a>
+                  </li>
+                {% endif %}
+              {% endunless %}
+            {% endfor %}
+          </ul>
+        </aside>
+      {%- when 'tags' -%}
+        <aside class="widget widget_product_tag_cloud" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          <ul class="tagcloud">
+            {%- for tag in collection.all_tags -%}
+              {%- if current_tags contains tag -%}
+              <li class="active">{{ tag | link_to_remove_tag: tag }}</li>
+              {%- else -%}
+              <li>{{ tag | link_to_add_tag: tag }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </aside>
+      {%- when 'products' -%}
+        <aside class="widget widget_products" {{ my_block.shopify_attributes }}>
+          {%- if my_block.settings.heading != blank -%}
+          <h3 class="widget-title">{{ my_block.settings.heading }}</h3>
+          {%- endif -%}
+          {%- assign my_collection = collections[my_block.settings.collection] -%}
+          <ul class="product_list_widget">
+            {%- for my_product in my_collection.products limit: my_block.settings.limit -%}
+            <li>
+              {%- assign current_variant = my_product.selected_or_first_available_variant -%}
+              {%- assign featured_image = current_variant.featured_image | default: my_product.featured_image -%}
+              {%- assign featured_image_alt = current_variant.featured_image.alt | default: my_product.featured_image.alt -%}
+              <a href="{{ my_product.url | within: my_collection }}" title="{{ my_product.title | escape }}">
+                <img src="{{ featured_image | img_url: '150x' }}" alt="{{ featured_image_alt }}" srcset="{{ featured_image | img_url: '150x' }} 150w, {{ featured_image | img_url: '235x' }} 235w, {{ featured_image | img_url: '768x' }} 768w" sizes="(max-width: 150px) 100vw, 150px" />
+                <span class="product-title">{{ my_product.title }}</span>
+              </a>
+              {% include 'wholesaleProductDiscount' %}
+				{% if customer.tags contains "distributor" or customer.tags contains "Distributor" and count >= 25 %}
+              		{% if discount_percent > 0 and my_product.type == "SweetLegs Petite"  or my_product.type == "SweetLegs Kids"  or my_product.type == "SweetLegs Plus"  or my_product.type == "SweetLegs One Size" %}
+              			            {% if my_product.tags contains 'c1' %}
+            							{% assign discount_percent = 0.6 %}
+            						{% elsif my_product.tags contains 'c2' %}
+            							{% assign discount_percent = 0.7 %}
+            						{% elsif my_product.tags contains 'c3' %}
+            							{% assign discount_percent = 0.77 %}
+            						{% elsif my_product.tags contains 'c4' %}
+            							{% assign discount_percent = 0.84 %}
+            						{% endif %}
+       						{% assign new_price = current_variant.price | times: discount_percent %}
+                            {% assign final_price = current_variant.price | minus: new_price %}
+              			
+              				<del><span class="money">{{ current_variant.price | money }}</span></del>
+              				<ins><span class="money">{{ final_price | money }}</span></ins>
+              			
+              		{% endif %}
+              	{% else %}
+              {%- if current_variant.compare_at_price > current_variant.price -%}
+              <del><span class="money">{{ current_variant.compare_at_price | money }}</span></del>
+              {%- endif -%}
+              <ins><span class="money">{{ current_variant.price | money }}</span></ins>
+            </li>
+            {% endif %}
+            {%- endfor -%}
+          </ul>
+        </aside>
+      {%- when 'filter' -%}
+        <aside class="widget widget_filter" {{ my_block.shopify_attributes }}>
+          {%- assign cat_item = my_block.settings.heading -%}
+          {%- assign cat_item_down = cat_item | downcase  | replace: ' ', '_' -%}
+          {%- assign filters = my_block.settings.values | strip_newlines | downcase | split: ',' -%}
+          {%- assign current_filters = current_tags | join: ',' | downcase | append: ',' | prepend: ',' -%}
+          <h3 class="widget-title">
+            <span>{{ cat_item }}</span>
+            {%- for custom_tag in filters -%}
+            {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+            {%- if current_filters contains custom_filter -%}
+            <span class="clear">{{ 'collections.general.clear' | t | escape }}</span>
+            {%- break -%}
+            {%- endif -%}
+            {%- endfor -%}
+          </h3>
+          <div class="advanced-filter" data-multi_choice="{{ my_block.settings.multi_choice }}">
+            {%- case my_block.settings.type -%}
+            {%- when 'normal' -%}
+              {%- for custom_tag in filters -%}
+              {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+              <div class="filter-tag filter-normal{% if current_filters contains custom_filter %} active{% endif %}">
+                <input class="filter" id="{{cat_item_down}}_{{custom_tag | handleize}}" type="checkbox" value="{{custom_tag | handleize}}" />
+                <label for="{{cat_item_down}}_{{custom_tag | handleize}}">{{ custom_tag }}</label>
+              </div>
+              {%- endfor -%}
+            {%- when 'dropdown' -%}
+              <div class="filter-tag filter-dropdown">
+                <select class="filter">
+                  <option value="">{{ 'collections.general.any' | t | escape }}</option>
+                  {%- for custom_tag in filters -%}
+                  {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                  <option value="{{custom_tag | handleize}}"{% if current_filters contains custom_filter %} selected="selected"{% endif %}>{{ custom_tag }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- when 'checkbox' -%}
+              {%- for custom_tag in filters -%}
+              {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+              <div class="filter-tag filter-check{% if current_filters contains custom_filter %} active{% endif %}">
+                <input class="filter" id="{{cat_item_down}}_{{custom_tag | handleize}}" type="checkbox" value="{{custom_tag | handleize}}" />
+                <label for="{{cat_item_down}}_{{custom_tag | handleize}}">{{ custom_tag }}</label>
+              </div>
+              {%- endfor -%}
+            {%- when 'background' -%}
+              {%- assign file_extension = '.png' -%}
+              {%- for custom_tag in filters -%}
+              {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+              <div class="filter-tag filter-image{% if current_filters contains custom_filter %} active{% endif %}">
+                <input class="filter" id="{{cat_item_down}}_{{custom_tag | handleize}}" type="checkbox" value="{{custom_tag | handleize}}" />
+                <label for="{{cat_item_down}}_{{custom_tag | handleize}}" data-title="{{ custom_tag | escape }}"><i style="background-color:{{custom_tag | handle}};background-image:url({{custom_tag | handle | append: file_extension | asset_url}})"></i></label>
+              </div>
+              {%- endfor -%}
+            {%- endcase -%}
+          </div>
+        </aside>
+    {%- endcase -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- include 'no-blocks' -%}
+{%- endif -%}

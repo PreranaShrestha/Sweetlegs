@@ -1,0 +1,14 @@
+{%- capture my_handle -%}{% include 'shortcode-render' render:'handle' %}{%- endcapture -%}
+{%- assign my_list = linklists[my_handle] -%}
+{%- if my_list.handle != blank -%}
+<aside class="widget widget_nav_menu">
+  <h3 class="widget-title">{{ my_list.title }}</h3>
+  <div class="menu-evas-shop-container">
+    <ul class="menu">
+      {%- for link in my_list.links -%}
+      <li class="menu-item"><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</aside>
+{%- endif -%}

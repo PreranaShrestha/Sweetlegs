@@ -1,0 +1,180 @@
+<div id="products-{{ section.id }}" class="page-width" data-section-id="{{ section.id }}" data-section-type="products"{% if section.settings.background != blank %} style="background-color:{{ section.settings.background }};"{% endif %}>
+  <div class="row">
+    <div class="large-12 columns">
+      {%- if section.settings.layout == 'listing' -%}
+        {%- if section.settings.heading != blank -%}
+        <h2 class="shortcode_title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+        {%- case section.settings.columns -%}
+          {%- when 6 -%}
+            {%- assign products_per_row = 6 -%}
+            {%- assign products_per_row_xl = 6 -%}
+            {%- assign products_per_row_l = 6 -%}
+            {%- assign products_per_row_m = 4 -%}
+            {%- assign products_per_row_s = 2 -%}
+          {%- when 5 -%}
+            {%- assign products_per_row = 5 -%}
+            {%- assign products_per_row_xl = 5 -%}
+            {%- assign products_per_row_l = 5 -%}
+            {%- assign products_per_row_m = 3 -%}
+            {%- assign products_per_row_s = 2 -%}
+          {%- when 4 -%}
+            {%- assign products_per_row = 4 -%}
+            {%- assign products_per_row_xl = 4 -%}
+            {%- assign products_per_row_l = 4 -%}
+            {%- assign products_per_row_m = 3 -%}
+            {%- assign products_per_row_s = 2 -%}
+          {%- when 3 -%}
+            {%- assign products_per_row = 3 -%}
+            {%- assign products_per_row_xl = 3 -%}
+            {%- assign products_per_row_l = 3 -%}
+            {%- assign products_per_row_m = 2 -%}
+            {%- assign products_per_row_s = 2 -%}
+          {%- else -%}
+            {%- assign products_per_row = 2 -%}
+            {%- assign products_per_row_xl = 2 -%}
+            {%- assign products_per_row_l = 2 -%}
+            {%- assign products_per_row_m = 2 -%}
+            {%- assign products_per_row_s = 2 -%}
+        {%- endcase -%}
+
+        <div class="row visible products {{ section.settings.style }} products-grid product-category-list small-up-{{ products_per_row_s }} medium-up-{{ products_per_row_m }} large-up-{{ products_per_row_l }} xlarge-up-{{ products_per_row_xl }} xxlarge-up-{{ products_per_row }} animated fadeIn">
+          {%- for block in section.blocks limit: section.blocks.size -%}
+            {%- assign my_product = all_products[block.settings.product] -%}
+            {%- assign template_name = 'product-item' -%}
+            {%- if section.settings.style == 'simple' -%}
+              {%- assign template_name = 'product-item-simple' -%}
+            {%- endif -%}
+            {%- include template_name -%}
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+      {%- else -%}
+        <div class="shortcode_products_slider">
+          <div class="products-carousel products-carousels-slider">
+            {%- if section.settings.heading != blank -%}
+            <h2 class="shortcode_title">{{ section.settings.heading | escape }}</h2>
+            {%- endif -%}
+
+            {%- if section.blocks.size > 0 -%}
+            <div class="products {{ section.settings.style }} products-grid product-layout-grid owl-carousel owl-theme" data-per-view="{{ section.settings.columns | escape }}">
+              {%- for block in section.blocks limit: section.blocks.size -%}
+                {%- assign my_product = all_products[block.settings.product] -%}
+                {%- assign template_name = 'product-item' -%}
+                {%- if section.settings.style == 'simple' -%}
+                  {%- assign template_name = 'product-item-simple' -%}
+                {%- endif -%}
+                {%- include template_name -%}
+              {%- endfor -%}
+            </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size == 0 -%}
+        {%- include 'no-blocks' -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Featured products",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Featured Products"
+      },
+      {
+        "type": "range",
+        "id": "columns",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "label": "Products per Row",
+        "default": 4
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Layout",
+        "options": [
+          {
+            "value": "listing",
+            "label": "Listing"
+          },
+          {
+            "value": "slider",
+            "label": "Slider"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "style",
+        "label": "Style",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "simple",
+            "label": "Simple"
+          }
+        ]
+      },
+      {
+        "type": "color",
+        "id": "background",
+        "label": "Background",
+        "default": "#ffffff"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "featured_product",
+        "name": "Product",
+        "settings": [
+          {
+            "label": "Product",
+            "id": "product",
+            "type": "product"
+          },
+          {
+            "label": "Image (Simple style)",
+            "id": "image",
+            "type": "image_picker"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured products",
+        "category": "Product",
+        "settings": {
+          "columns": 4
+        },
+        "blocks": [
+          {
+            "type": "featured_product"
+          },
+          {
+            "type": "featured_product"
+          },
+          {
+            "type": "featured_product"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

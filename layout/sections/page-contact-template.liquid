@@ -1,0 +1,211 @@
+{% if section.settings.api_key %}
+<script>
+  theme.mapKey = {{ section.settings.api_key | json }};
+</script>
+{% endif %}
+
+<script>
+  theme.strings.addressError = {{ 'sections.map.address_error' | t | json }};
+  theme.strings.addressNoResults = {{ 'sections.map.address_no_results' | t | json }};
+  theme.strings.addressQueryLimit = {{ 'sections.map.address_query_limit_html' | t | json }};
+  theme.strings.authError = {{ 'sections.map.auth_error_html' | t | json }};
+</script>
+<div data-section-id="{{ section.id }}" data-section-type="page-contact-template">
+  <div id="primary" class="content-area">
+    <div class="page-header animated fadeIn">
+      <div class="row"></div>
+    </div>
+    <div id="content" class="site-content">
+      <article class="page page-contact">
+        <!--<div class="map-section__container" id="Map-{{ section.id }}" data-address-setting="{{ section.settings.map_address }}"></div> -->
+        <div class="row">
+          <div class="{% if section.settings.map_our_address != '' or section.settings.map_opening_hours != '' %}medium-8{% else %}medium-12{% endif %} columns">
+            <div class="entry-content">
+              <h1>{{ page.title }}</h1>
+              {%- if page.content.size > 0 -%}
+              <div class="rte">
+                {%- include 'shortcode' load: page.content -%}
+              </div>
+              {%- endif -%}
+              <div class="contact-form">
+                {%- form 'contact' -%}
+
+                {%- if form.posted_successfully? -%}
+                <p class="infos">
+                  {{- 'contact.form.post_success' | t -}}
+                </p>
+                {%- endif -%}
+
+                {{- form.errors | default_errors -}}
+                
+                <div class="row">
+                  <div class="large-4 columns">
+                    <div class="minimal-form-input {% if form[name] %}has{% elsif customer %}{% if customer.name %}has{% else %}no{% endif %}{% else %}no{% endif %}-text">
+                      <label for="ContactFormName">
+                        <span class="text">
+                          <span class="text-inner">{{ 'contact.form.name' | t }}</span>
+                        </span>
+                      </label>
+                      <input type="text" id="ContactFormName" class="input-text" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}" />
+                    </div>
+                  </div>
+                  <div class="large-4 columns">
+                    <div class="minimal-form-input {% if form[email] %}has{% elsif customer %}{% if customer.email %}has{% else %}no{% endif %}{% else %}no{% endif %}-text">
+                      <label for="ContactFormEmail">
+                        <span class="text">
+                          <span class="text-inner">{{ 'contact.form.email' | t }} <span class="required">*</span></span>
+                        </span>
+                      </label>
+                      <input type="email" required="required" id="ContactFormEmail" class="input-text" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" autocorrect="off" autocapitalize="off" />
+                    </div>
+                  </div>
+                  <div class="large-4 columns">
+                    <div class="minimal-form-input {% if form[phone] %}has{% elsif customer %}{% if customer.phone %}has{% else %}no{% endif %}{% else %}no{% endif %}-text">
+                      <label for="ContactFormPhone">
+                        <span class="text">
+                          <span class="text-inner">{{ 'contact.form.phone' | t }}</span>
+                        </span>
+                      </label>
+                      <input type="tel" id="ContactFormPhone" class="input-text" name="contact[phone]" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}" pattern="[0-9\-]*" />
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix">
+                  <p class="minimal-form-input {% if form[body] %}has{% else %}no{% endif %}-text">
+                    <label for="ContactFormMessage">
+                      <span class="text">
+                        <span class="text-inner">{{ 'contact.form.message' | t }}</span>
+                      </span>
+                    </label>
+                    <textarea rows="10" id="ContactFormMessage" class="input-text" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+                  </p>
+                </div>
+                <p>
+                  <input type="submit" class="button" value="{{ 'contact.form.submit' | t }}" />
+                </p>
+                {%- endform -%}
+              </div>
+            </div>
+          </div>
+          {%- if section.settings.map_our_address != '' or section.settings.map_opening_hours != '' -%}
+          <div class="medium-4 columns">
+            <div class="map-info-container">
+              {%- if section.settings.map_our_address != '' -%}
+              <div class="map-info">
+                {%- if section.settings.map_our_address_label != '' -%}
+                <div class="map-title">
+                  <h4>{{ section.settings.map_our_address_label }}</h4>
+                  <span class="map-border"><span></span></span>
+                </div>
+                {%- endif -%}
+                {%- if section.settings.map_our_address_text != '' -%}
+                <div class="map-content">
+                  {{- section.settings.map_our_address_text -}}
+                </div>
+                {%- endif -%}
+              </div>
+              {%- endif -%}
+              {%- if section.settings.map_opening_hours != '' -%}
+              <div class="map-info">
+                {%- if section.settings.map_opening_hours_label != '' -%}
+                <div class="map-title">
+                  <h4>{{ section.settings.map_opening_hours_label }}</h4>
+                  <span class="map-border"><span></span></span>
+                </div>
+                {%- endif -%}
+                {%- if section.settings.map_opening_hours_text != '' -%}
+                <div class="map-content">
+                  {{- section.settings.map_opening_hours_text -}}
+                </div>
+                {%- endif -%}
+              </div>
+              {%- endif -%}
+              <div class="map-space"></div>
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Contact Page",
+    "settings": [
+      {
+        "id": "map_address",
+        "type": "text",
+        "label": "Map address",
+        "info": "Google maps will find the exact location",
+        "default": "80 Spadina Ave, Toronto"
+      },
+      {
+        "id": "api_key",
+        "type": "text",
+        "label": "Google Maps API key",
+        "info": "If your store experiences more than 2,500 visitors a day, you'll need to generate both [JavaScript](https://developers.google.com/maps/documentation/javascript/get-api-key) and [Geocoding](https://developers.google.com/maps/documentation/geocoding/get-api-key) API keys"
+      },
+      {
+        "type": "header",
+        "content": "Our Address"
+      },
+      {
+        "type": "select",
+        "id": "map_our_address",
+        "label": "Enable Our Address",
+        "options": [
+          {
+            "value": "",
+            "label": "No"
+          },
+          {
+            "value": "1",
+            "label": "Yes"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "map_our_address_label",
+        "label": "Label Our Address"
+      },
+      {
+        "type": "html",
+        "id": "map_our_address_text",
+        "label": "Text Our Address"
+      },
+      {
+        "type": "header",
+        "content": "Opening Hours"
+      },
+      {
+        "type": "select",
+        "id": "map_opening_hours",
+        "label": "Enable Opening Hours",
+        "options": [
+          {
+            "value": "",
+            "label": "No"
+          },
+          {
+            "value": "1",
+            "label": "Yes"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "map_opening_hours_label",
+        "label": "Label Opening Hours"
+      },
+      {
+        "type": "html",
+        "id": "map_opening_hours_text",
+        "label": "Text Opening Hours"
+      }
+    ]
+  }
+{% endschema %}
